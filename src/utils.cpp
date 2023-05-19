@@ -23,7 +23,7 @@ bool check_collision( SDL_Rect a, SDL_Rect b ) {
     topB = b.y;
     bottomB = b.y + b.h;
 
-    //If any of the sides from A are outside of B
+    //If any of the sides from A are outside B
     if( bottomA <= topB ) {
         return false;
     }
@@ -70,7 +70,7 @@ bool check_collision_yax(SDL_Rect a, SDL_Rect b)
     topB = b.y;
     bottomB = b.y + b.h;
 
-    //If any of the sides from A are outside of B
+    //If any of the sides from A are outside B
     if( bottomA + PIXEL_BUFFER <= topB ) {
         return false;
     }

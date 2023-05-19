@@ -167,7 +167,7 @@ int main( int argc, char* args[] ) {
     // block and ground rects for testing collision
     SDL_Rect block;
     block.x = 0;
-    block.y = 200;
+    block.y = 300;
     block.w = 100;
     block.h = 100;
     SDL_Rect ground;
@@ -175,9 +175,12 @@ int main( int argc, char* args[] ) {
     ground.y = 400;
     ground.w = SCREEN_WIDTH;
     ground.h = 100;
-    std::vector<SDL_Rect> colliders = {block, ground};
-
-
+    SDL_Rect platform;
+    platform.x = 180;
+    platform.y = 350;
+    platform.w = 100;
+    platform.h = 10;
+    std::vector<SDL_Rect> colliders = {block, ground, platform};
 
     // main loop
     bool quit = false;
@@ -229,6 +232,7 @@ int main( int argc, char* args[] ) {
         SDL_RenderFillRect(renderer, &block);
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderFillRect(renderer, &ground);
+        SDL_RenderFillRect(renderer, &platform);
 
         // Update Screen
         SDL_RenderPresent(renderer);

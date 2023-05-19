@@ -10,15 +10,12 @@
 
 class Player {
 public:
-//    const int width = 32;
-//    const int height = 48;
-//    const float velocity = 400.0f;
-
     Player();
     void handle_event(SDL_Event& e);
     void move(float delta_time, std::vector<SDL_Rect>& objects);
     void render(Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip, int direction) const;
     void jump();
+
 private:
     const int width;
     const int height;
