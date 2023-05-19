@@ -10,9 +10,9 @@
 
 class Player {
 public:
-    static const int width = 32;
-    static const int height = 48;
-    constexpr static float velocity = 600.0f;
+//    const int width = 32;
+//    const int height = 48;
+//    const float velocity = 400.0f;
 
     Player();
     void handle_event(SDL_Event& e);
@@ -20,6 +20,10 @@ public:
     void render(Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip, int direction) const;
     void jump();
 private:
+    const int width;
+    const int height;
+    const float velocity;
+    const float jump_velocity;
     int pos_x, pos_y;
     float vel_x, vel_y;
     SDL_Rect collider;

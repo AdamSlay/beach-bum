@@ -5,6 +5,7 @@
 #include "SDL2/SDL.h" // If your function uses Object
 
 bool check_collision(SDL_Rect a, SDL_Rect b);
+bool check_collision_yax(SDL_Rect a, SDL_Rect b);
 
 
 #endif // UTILS_H
