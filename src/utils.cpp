@@ -1,10 +1,10 @@
 #include "utils.h"
 
-bool check_collision( SDL_Rect a, SDL_Rect b )
-{
+bool check_collision( SDL_Rect a, SDL_Rect b ) {
     /*
      * Check for collision between two rectangles on all sides
      */
+
     //The sides of the rectangles
     int leftA, leftB;
     int rightA, rightB;
@@ -24,23 +24,19 @@ bool check_collision( SDL_Rect a, SDL_Rect b )
     bottomB = b.y + b.h;
 
     //If any of the sides from A are outside of B
-    if( bottomA <= topB )
-    {
+    if( bottomA <= topB ) {
         return false;
     }
 
-    if( topA >= bottomB )
-    {
+    if( topA >= bottomB ) {
         return false;
     }
 
-    if( rightA <= leftB )
-    {
+    if( rightA <= leftB ) {
         return false;
     }
 
-    if( leftA >= rightB )
-    {
+    if( leftA >= rightB ) {
         return false;
     }
 
@@ -75,23 +71,19 @@ bool check_collision_yax(SDL_Rect a, SDL_Rect b)
     bottomB = b.y + b.h;
 
     //If any of the sides from A are outside of B
-    if( bottomA + PIXEL_BUFFER <= topB )
-    {
+    if( bottomA + PIXEL_BUFFER <= topB ) {
         return false;
     }
 
-    if( topA >= bottomB )
-    {
+    if( topA >= bottomB ) {
         return false;
     }
 
-    if( rightA <= leftB )
-    {
+    if( rightA <= leftB ) {
         return false;
     }
 
-    if( leftA >= rightB )
-    {
+    if( leftA >= rightB ) {
         return false;
     }
 

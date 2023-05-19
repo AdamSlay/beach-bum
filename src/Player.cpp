@@ -7,7 +7,7 @@
 const int SCREEN_HEIGHT = 420;
 const int SCREEN_WIDTH = 770;
 const int COLLIDER_EDGE_BUFFER = 5;
-const int GRAVITY = 1000;
+const int GRAVITY = 2000;
 
 Player::Player() :
         width(32),
@@ -32,15 +32,10 @@ void Player::handle_event(SDL_Event& e) {
     // y-axis
     if(currentKeyStates[SDL_SCANCODE_UP]) {
         jump();
-        jumping = true;
     }
     else if(currentKeyStates[SDL_SCANCODE_DOWN]) {
         vel_y = velocity;
     }
-    // resetting the y velocity every step that a key is pressed which isn't up or down makes the character walk on air while falling and pressing left or right
-//    else {
-//        vel_y = 0;
-//    }
 
     // x-axis
     if(currentKeyStates[SDL_SCANCODE_LEFT]) {
@@ -55,7 +50,7 @@ void Player::handle_event(SDL_Event& e) {
 }
 
 void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
-    // apply gravity if not grounded
+    // apply gravity
     if (!grounded || vel_y >= 0) {
         vel_y += GRAVITY * delta_time;
     }
@@ -64,11 +59,15 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     pos_x += vel_x * delta_time;
     collider.x = pos_x + COLLIDER_EDGE_BUFFER;
     for (SDL_Rect object: objects) {
+
         if (check_collision(collider, object)) {
+
+            // player is moving right and collided with object
             if (vel_x > 0) {
                 collider.x = object.x - collider.w;
                 pos_x = collider.x - COLLIDER_EDGE_BUFFER;
             }
+            // player is moving left and collided with object
             else if (vel_x < 0) {
                 collider.x = object.x + object.w;
                 pos_x = collider.x - COLLIDER_EDGE_BUFFER;
@@ -80,15 +79,19 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     pos_y += vel_y * delta_time;
     collider.y = pos_y + COLLIDER_EDGE_BUFFER;
     for (SDL_Rect object: objects) {
+
         if (check_collision_yax(collider, object)) {
-            if (vel_y >= 0) {  // player is falling and collided with object
+
+            // player is falling and collided with object
+            if (vel_y >= 0) {
                 collider.y = object.y - collider.h;
                 pos_y = collider.y - COLLIDER_EDGE_BUFFER;
                 jumping = false;
                 grounded = true;
                 vel_y = 0;
             }
-            else if (vel_y < 0) {  // player is jumping and collided with object
+            // player is jumping and collided with object
+            else if (vel_y < 0) {
                 collider.y = object.y + object.h;
                 pos_y = collider.y - COLLIDER_EDGE_BUFFER;
             }
