@@ -8,12 +8,15 @@ const int SCREEN_HEIGHT = 420;
 const int SCREEN_WIDTH = 770;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 2000;
+const int JUMP_FORCE = 1200;  // for sustained jump
+const int JUMP_TAPER = 50;  // for sustained jump
 
 Player::Player() :
         width(32),
         height(48),
         velocity(400.0f),
-        jump_velocity(500.0f),
+        initial_jump_velocity(400.0f),
+        sustained_jump_velocity(),
         pos_x(0),
         pos_y(0),
         vel_x(0.0f),
@@ -31,10 +34,21 @@ void Player::handle_event(SDL_Event& e) {
 
     // y-axis
     if(currentKeyStates[SDL_SCANCODE_UP]) {
-        jump();
+        if (!jumping && grounded) {
+            jump();
+        }
+        else if (jumping) {
+            sustained_jump_velocity -= JUMP_TAPER;
+            if (sustained_jump_velocity <= 0) {
+                sustained_jump_velocity = 0;
+            }
+        }
     }
     else if(currentKeyStates[SDL_SCANCODE_DOWN]) {
         vel_y = velocity;
+    }
+    else {
+        jumping = false;
     }
 
     // x-axis
@@ -54,6 +68,10 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     if (!grounded || vel_y >= 0) {
         vel_y += GRAVITY * delta_time;
     }
+    if (jumping) {
+        vel_y -= sustained_jump_velocity * delta_time;
+        sustained_jump_velocity -= JUMP_TAPER * delta_time;
+    }
 
     // move player along x-axis then check for collision
     pos_x += vel_x * delta_time;
@@ -61,7 +79,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     for (SDL_Rect object: objects) {
 
         if (check_collision(collider, object)) {
-
+            jumping = false;
             // player is moving right and collided with object
             if (vel_x > 0) {
                 collider.x = object.x - collider.w;
@@ -115,9 +133,10 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
 
 void Player::jump() {
    if (!jumping && grounded) {
-       vel_y -= jump_velocity;
+       vel_y -= initial_jump_velocity;
        jumping = true;
        grounded = false;
+       sustained_jump_velocity = JUMP_FORCE;
    }
 }
 

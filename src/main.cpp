@@ -177,7 +177,7 @@ int main( int argc, char* args[] ) {
     ground.h = 100;
     SDL_Rect platform;
     platform.x = 180;
-    platform.y = 350;
+    platform.y = 200;
     platform.w = 100;
     platform.h = 10;
     std::vector<SDL_Rect> colliders = {block, ground, platform};
