@@ -9,7 +9,7 @@ const int SCREEN_WIDTH = 770;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 2000;
 const int JUMP_FORCE = 1200;  // for sustained jump
-const int JUMP_TAPER = 50;  // for sustained jump
+const int JUMP_TAPER = 100;  // for sustained jump
 
 Player::Player() :
         width(32),
@@ -65,9 +65,12 @@ void Player::handle_event(SDL_Event& e) {
 
 void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     // apply gravity
-    if (!grounded || vel_y >= 0) {
-        vel_y += GRAVITY * delta_time;
+    vel_y += GRAVITY * delta_time;
+
+    if (vel_y > 0 && !grounded) {
+        vel_y += (GRAVITY * 1.2) * delta_time;
     }
+
     if (jumping) {
         vel_y -= sustained_jump_velocity * delta_time;
         sustained_jump_velocity -= JUMP_TAPER * delta_time;

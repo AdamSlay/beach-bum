@@ -177,10 +177,20 @@ int main( int argc, char* args[] ) {
     ground.h = 100;
     SDL_Rect platform;
     platform.x = 180;
-    platform.y = 200;
+    platform.y = 350;
     platform.w = 100;
     platform.h = 10;
-    std::vector<SDL_Rect> colliders = {block, ground, platform};
+    SDL_Rect platform2;
+    platform2.x = 180;
+    platform2.y = 220;
+    platform2.w = 100;
+    platform2.h = 10;
+    SDL_Rect platform3;
+    platform3.x = 400;
+    platform3.y = 220;
+    platform3.w = 100;
+    platform3.h = 10;
+    std::vector<SDL_Rect> colliders = {block, ground, platform, platform2, platform3};
 
     // main loop
     bool quit = false;
@@ -233,6 +243,8 @@ int main( int argc, char* args[] ) {
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderFillRect(renderer, &ground);
         SDL_RenderFillRect(renderer, &platform);
+        SDL_RenderFillRect(renderer, &platform2);
+        SDL_RenderFillRect(renderer, &platform3);
 
         // Update Screen
         SDL_RenderPresent(renderer);
