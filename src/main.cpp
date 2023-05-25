@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 
+#include "Camera.h"
 #include "Player.h"
 #include "Texture.h"
 
@@ -17,6 +18,8 @@ const int MINIMAP_X = ORIGIN_X + 20;
 const int MINIMAP_Y = ORIGIN_Y + 20;
 const int MINIMAP_WIDTH = SCREEN_WIDTH / 5;
 const int MINIMAP_HEIGHT = SCREEN_HEIGHT / 5;
+const int LEVEL_WIDTH = 2000;
+const int LEVEL_HEIGHT = 2000;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 const int RUNNING_ANIMATION_FRAMES = 8;
@@ -77,7 +80,7 @@ bool init() {
 
 bool loadMedia() {
     // Asset file paths
-    std::string bg_path = "../assets/press.png";
+    std::string bg_path = "../assets/bb_90s_pattern.png";
     std::string minimap_path = "../assets/up.png";
     std::string char_path = "../assets/bb_run_sheet.png";
 
@@ -144,18 +147,11 @@ int main( int argc, char* args[] ) {
         return 2;
     }
 
-    // Rect for full viewport
-    SDL_Rect full_viewport;
-    full_viewport.x = ORIGIN_X;
-    full_viewport.y = ORIGIN_Y;
-    full_viewport.w = SCREEN_WIDTH;
-    full_viewport.h = SCREEN_HEIGHT;
-    // Rect for minimap viewport
-    SDL_Rect minimap_viewport;
-    minimap_viewport.x = MINIMAP_X;
-    minimap_viewport.y = MINIMAP_Y;
-    minimap_viewport.w = MINIMAP_WIDTH;
-    minimap_viewport.h = MINIMAP_HEIGHT;
+    // Viewports/Camera
+    SDL_Rect full_viewport = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_Rect minimap_viewport = {MINIMAP_X, MINIMAP_Y, MINIMAP_WIDTH, MINIMAP_HEIGHT};
+    SDL_Rect camera_rect = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
+    Camera camera(camera_rect, LEVEL_WIDTH, LEVEL_HEIGHT);
 
     // Main loop vars
     SDL_Event e;
@@ -173,8 +169,8 @@ int main( int argc, char* args[] ) {
     SDL_Rect ground;
     ground.x = 0;
     ground.y = 400;
-    ground.w = SCREEN_WIDTH;
-    ground.h = 100;
+    ground.w = 2000;
+    ground.h = 200;
     SDL_Rect platform;
     platform.x = 180;
     platform.y = 350;
@@ -191,6 +187,17 @@ int main( int argc, char* args[] ) {
     platform3.w = 100;
     platform3.h = 10;
     std::vector<SDL_Rect> colliders = {block, ground, platform, platform2, platform3};
+
+    // BG tile
+    int tile_width = 128;
+    int tile_height = 128;
+    SDL_Rect src_rect, dest_rect;
+    src_rect.x = 0;
+    src_rect.y = 0;
+    src_rect.w = 256;
+    src_rect.h = 256;
+    dest_rect.w = tile_width;
+    dest_rect.h = tile_height;
 
     // main loop
     bool quit = false;
@@ -227,24 +234,52 @@ int main( int argc, char* args[] ) {
 
         // process player actions after calculating time since last frame
         player.move(delta_time, colliders);
+        camera.center_on_player(player);
 
         // Clear Screen
         SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
         SDL_RenderClear(renderer);
 
-        // Render background, char, minimap
-        bg_texture.render(0,0, renderer, full_viewport, nullptr, 0);
-        player.render(char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[frame / 4], player_direction);
-//        SDL_SetTextureAlphaMod(minimap_texture.getTexture(), 220); // set transparency for minimap
-//        minimap_texture.render(0,0, renderer, minimap_viewport, nullptr, 0);
+        // Loop to tile the bg image across the screen
+        for(int x = 0; x < LEVEL_WIDTH; x += tile_width) {
+            for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
+                dest_rect.x = x - camera.rect.x;
+                dest_rect.y = y - camera.rect.y;
+                SDL_RenderCopy(renderer, bg_texture.getTexture(), &src_rect, &dest_rect);
+            }
+        }
+        // Render player
+        player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[frame / 4], player_direction);
 
-        // Render test block and ground
-        SDL_RenderFillRect(renderer, &block);
+        // create temporary copies for rendering
+        SDL_Rect render_platform = platform;
+        SDL_Rect render_platform2 = platform2;
+        SDL_Rect render_platform3 = platform3;
+        SDL_Rect render_block = block;
+        SDL_Rect render_ground = ground;
+
+        // adjust platform position to camera
+        render_platform.x -= camera.rect.x;
+        render_platform.y -= camera.rect.y;
+        render_platform2.x -= camera.rect.x;
+        render_platform2.y -= camera.rect.y;
+        render_platform3.x -= camera.rect.x;
+        render_platform3.y -= camera.rect.y;
+        render_block.x -= camera.rect.x;
+        render_block.y -= camera.rect.y;
+        render_ground.x -= camera.rect.x;
+        render_ground.y -= camera.rect.y;
+
+
+
+        // Render test platforms and ground
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-        SDL_RenderFillRect(renderer, &ground);
-        SDL_RenderFillRect(renderer, &platform);
-        SDL_RenderFillRect(renderer, &platform2);
-        SDL_RenderFillRect(renderer, &platform3);
+        SDL_RenderFillRect(renderer, &render_ground);
+        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 0xFF);
+        SDL_RenderFillRect(renderer, &render_block);
+        SDL_RenderFillRect(renderer, &render_platform);
+        SDL_RenderFillRect(renderer, &render_platform2);
+        SDL_RenderFillRect(renderer, &render_platform3);
 
         // Update Screen
         SDL_RenderPresent(renderer);

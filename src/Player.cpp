@@ -4,11 +4,11 @@
 #include "utils.h"
 
 
-const int SCREEN_HEIGHT = 420;
-const int SCREEN_WIDTH = 770;
+const int SCREEN_HEIGHT = 2000;
+const int SCREEN_WIDTH = 2000;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 2000;
-const int JUMP_FORCE = 1200;  // for sustained jump
+const int JUMP_FORCE = 1400;  // for sustained jump
 const int JUMP_TAPER = 100;  // for sustained jump
 
 Player::Player() :
@@ -69,6 +69,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
 
     if (vel_y > 0 && !grounded) {
         vel_y += (GRAVITY * 1.2) * delta_time;
+        jumping = false;
     }
 
     if (jumping) {
@@ -99,6 +100,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     // move player along y-axis then check for collision
     pos_y += vel_y * delta_time;
     collider.y = pos_y + COLLIDER_EDGE_BUFFER;
+    grounded = false;
     for (SDL_Rect object: objects) {
 
         if (check_collision_yax(collider, object)) {
@@ -143,6 +145,24 @@ void Player::jump() {
    }
 }
 
-void Player::render(Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0) const {
-    texture.render(pos_x, pos_y, renderer, viewport, clip, direction);
+void Player::render(int camera_x, int camera_y,Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0) const {
+    int render_x = pos_x - camera_x;
+    int render_y = pos_y - camera_y;
+    texture.render(render_x, render_y, renderer, viewport, clip, direction);
+}
+
+int Player::get_x() const {
+    return pos_x;
+}
+
+int Player::get_y() const {
+    return pos_y;
+}
+
+int Player::get_width() const {
+    return width;
+}
+
+int Player::get_height() const {
+    return height;
 }
