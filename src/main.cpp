@@ -14,10 +14,6 @@ const int ORIGIN_X = 0;
 const int ORIGIN_Y = 0;
 const int SCREEN_WIDTH = 770;
 const int SCREEN_HEIGHT = 420;
-const int MINIMAP_X = ORIGIN_X + 20;
-const int MINIMAP_Y = ORIGIN_Y + 20;
-const int MINIMAP_WIDTH = SCREEN_WIDTH / 5;
-const int MINIMAP_HEIGHT = SCREEN_HEIGHT / 5;
 const int LEVEL_WIDTH = 2000;
 const int LEVEL_HEIGHT = 2000;
 const int FPS = 60;
@@ -97,16 +93,7 @@ bool loadMedia() {
         std::cout << "Failed to load char_sprite_sheet!" << std::endl;
         success = false;
     }
-    // load minimap texture
-    if (!minimap_texture.loadFromFile(minimap_path, renderer)) {
-        std::cout << "Failed to load minimap_texture!" << std::endl;
-        success = false;
-    }
     else {
-        // set minimap width and height to appropriate values
-        minimap_texture.setWidth(MINIMAP_WIDTH);
-        minimap_texture.setHeight(MINIMAP_HEIGHT);
-
         // create char sprite clips
         for (int i = 0; i < 8; i++) {
             char_sprite_clips[i].x = (i * 64) + 12;
@@ -149,9 +136,8 @@ int main( int argc, char* args[] ) {
         return 2;
     }
 
-    // Viewports/Camera
+    // Viewport & Camera
     SDL_Rect full_viewport = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
-    SDL_Rect minimap_viewport = {MINIMAP_X, MINIMAP_Y, MINIMAP_WIDTH, MINIMAP_HEIGHT};
     SDL_Rect camera_rect = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
     Camera camera(camera_rect, LEVEL_WIDTH, LEVEL_HEIGHT);
 
@@ -271,8 +257,6 @@ int main( int argc, char* args[] ) {
         render_block.y -= camera.rect.y;
         render_ground.x -= camera.rect.x;
         render_ground.y -= camera.rect.y;
-
-
 
         // Render test platforms and ground
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
