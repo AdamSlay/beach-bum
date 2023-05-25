@@ -1,9 +1,11 @@
+#include <ctime>
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
+#include <random>
 
 #include "Camera.h"
 #include "Player.h"
@@ -23,7 +25,14 @@ const int RIGHT = 0;
 const int LEFT = 1;
 const float PARALLAX_FACTOR = 0.9f;  // less than 1 to make the background move slower
 
-
+// Define platform generation parameters
+const int PLATFORM_WIDTH = 100;
+const int PLATFORM_HEIGHT = 12;
+const int X_MIN = 100;
+const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
+const int Y_MIN = 200;
+const int Y_MAX = 300; // ensure platform doesn't exceed level bounds
+const int PLATFORM_COUNT = 10; // number of platforms to generate
 
 int player_direction{};  // 0 = right, 1 = left
 SDL_Window* window = nullptr;
@@ -148,33 +157,40 @@ int main( int argc, char* args[] ) {
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
 
-    // block and ground rects for testing collision
-    SDL_Rect block;
-    block.x = 0;
-    block.y = 300;
-    block.w = 100;
-    block.h = 100;
+    // starting_block and ground rects for testing collision
+    SDL_Rect starting_block;
+    starting_block.x = 0;
+    starting_block.y = 300;
+    starting_block.w = 100;
+    starting_block.h = 100;
     SDL_Rect ground;
     ground.x = 0;
     ground.y = 400;
     ground.w = 2000;
     ground.h = 200;
-    SDL_Rect platform;
-    platform.x = 180;
-    platform.y = 350;
-    platform.w = 100;
-    platform.h = 10;
-    SDL_Rect platform2;
-    platform2.x = 180;
-    platform2.y = 220;
-    platform2.w = 100;
-    platform2.h = 10;
-    SDL_Rect platform3;
-    platform3.x = 400;
-    platform3.y = 220;
-    platform3.w = 100;
-    platform3.h = 10;
-    std::vector<SDL_Rect> colliders = {block, ground, platform, platform2, platform3};
+    std::vector<SDL_Rect> colliders = {starting_block, ground};
+
+    // Use a random number generator
+    std::default_random_engine generator(std::time(nullptr));
+    std::uniform_int_distribution<int> distributionX(50, 100);
+    std::uniform_int_distribution<int> distributionY(Y_MIN, Y_MAX);
+
+    auto& last_platform = starting_block;
+    for (int i = 0; i < PLATFORM_COUNT; i++) {
+        SDL_Rect new_platform;
+        int potential_new_x = last_platform.x + last_platform.w + distributionX(generator);
+        new_platform.x = std::min(X_MAX, potential_new_x);
+        new_platform.y = distributionY(generator);
+        new_platform.w = PLATFORM_WIDTH;
+        new_platform.h = PLATFORM_HEIGHT;
+        std::cout << "New platform: " << new_platform.x << ", " << new_platform.y << std::endl;
+
+        // Add to colliders
+        colliders.push_back(new_platform);
+        last_platform = new_platform;
+    }
+
+    std::vector<SDL_Rect> platforms = colliders;
 
     // BG tile
     int tile_width = 128;
@@ -239,33 +255,14 @@ int main( int argc, char* args[] ) {
         // Render player
         player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[frame / 4], player_direction);
 
-        // create temporary copies for rendering
-        SDL_Rect render_platform = platform;
-        SDL_Rect render_platform2 = platform2;
-        SDL_Rect render_platform3 = platform3;
-        SDL_Rect render_block = block;
-        SDL_Rect render_ground = ground;
-
-        // adjust platform position to camera
-        render_platform.x -= camera.rect.x;
-        render_platform.y -= camera.rect.y;
-        render_platform2.x -= camera.rect.x;
-        render_platform2.y -= camera.rect.y;
-        render_platform3.x -= camera.rect.x;
-        render_platform3.y -= camera.rect.y;
-        render_block.x -= camera.rect.x;
-        render_block.y -= camera.rect.y;
-        render_ground.x -= camera.rect.x;
-        render_ground.y -= camera.rect.y;
-
-        // Render test platforms and ground
-        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-        SDL_RenderFillRect(renderer, &render_ground);
-        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 0xFF);
-        SDL_RenderFillRect(renderer, &render_block);
-        SDL_RenderFillRect(renderer, &render_platform);
-        SDL_RenderFillRect(renderer, &render_platform2);
-        SDL_RenderFillRect(renderer, &render_platform3);
+        // Render platforms
+        for (auto &platform : platforms) {
+            SDL_Rect render_rect = platform;
+            render_rect.x -= camera.rect.x;
+            render_rect.y -= camera.rect.y;
+            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+            SDL_RenderFillRect(renderer, &render_rect);
+        }
 
         // Update Screen
         SDL_RenderPresent(renderer);
