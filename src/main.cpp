@@ -25,6 +25,8 @@ const int FRAME_DURATION = 1000 / FPS;
 const int RUNNING_ANIMATION_FRAMES = 8;
 const int RIGHT = 0;
 const int LEFT = 1;
+const float PARALLAX_FACTOR = 0.9f;  // less than 1 to make the background move slower
+
 
 
 int player_direction{};  // 0 = right, 1 = left
@@ -243,8 +245,8 @@ int main( int argc, char* args[] ) {
         // Loop to tile the bg image across the screen
         for(int x = 0; x < LEVEL_WIDTH; x += tile_width) {
             for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
-                dest_rect.x = x - camera.rect.x;
-                dest_rect.y = y - camera.rect.y;
+                dest_rect.x = x - camera.rect.x * PARALLAX_FACTOR;
+                dest_rect.y = y - camera.rect.y * PARALLAX_FACTOR;
                 SDL_RenderCopy(renderer, bg_texture.getTexture(), &src_rect, &dest_rect);
             }
         }
