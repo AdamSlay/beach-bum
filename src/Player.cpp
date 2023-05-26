@@ -117,6 +117,8 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
             else if (vel_y < 0) {
                 collider.y = object.y + object.h;
                 pos_y = collider.y - COLLIDER_EDGE_BUFFER;
+                jumping = false;
+                vel_y = 0;
             }
         }
     }
