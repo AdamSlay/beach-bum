@@ -16,8 +16,8 @@ const int ORIGIN_X = 0;
 const int ORIGIN_Y = 0;
 const int SCREEN_WIDTH = 770;
 const int SCREEN_HEIGHT = 420;
-const int LEVEL_WIDTH = 2000;
-const int LEVEL_HEIGHT = 2000;
+const int LEVEL_WIDTH = 1000;
+const int LEVEL_HEIGHT = 800;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 const int RUNNING_ANIMATION_FRAMES = 8;
@@ -87,7 +87,7 @@ bool init() {
 
 bool loadMedia() {
     // Asset file paths
-    std::string bg_path = "../assets/bb_90s_pattern.png";
+    std::string bg_path = "../assets/bb_90s_pattern_dark.png";
     std::string minimap_path = "../assets/up.png";
     std::string char_path = "../assets/bb_run_sheet.png";
 
@@ -193,15 +193,15 @@ int main( int argc, char* args[] ) {
     std::vector<SDL_Rect> platforms = colliders;
 
     // BG tile
+    SDL_Rect bg_src_rect, bg_dest_rect;
+    bg_src_rect.x = 192;
+    bg_src_rect.y = 128;
+    bg_src_rect.w = 64;
+    bg_src_rect.h = 64;
     int tile_width = 128;
     int tile_height = 128;
-    SDL_Rect src_rect, dest_rect;
-    src_rect.x = 0;
-    src_rect.y = 0;
-    src_rect.w = 256;
-    src_rect.h = 256;
-    dest_rect.w = tile_width;
-    dest_rect.h = tile_height;
+    bg_dest_rect.w = tile_width;
+    bg_dest_rect.h = tile_height;
 
     // main loop
     bool quit = false;
@@ -247,12 +247,21 @@ int main( int argc, char* args[] ) {
         // Loop to tile the bg image across the screen
         for(int x = 0; x < LEVEL_WIDTH; x += tile_width) {
             for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
-                dest_rect.x = x - camera.rect.x * PARALLAX_FACTOR;
-                dest_rect.y = y - camera.rect.y * PARALLAX_FACTOR;
-                SDL_RenderCopy(renderer, bg_texture.getTexture(), &src_rect, &dest_rect);
+                bg_dest_rect.x = x - camera.rect.x * PARALLAX_FACTOR;
+                bg_dest_rect.y = y - camera.rect.y * PARALLAX_FACTOR;
+                SDL_RenderCopy(renderer, bg_texture.getTexture(), &bg_src_rect, &bg_dest_rect);
             }
         }
+
         // Render player
+        SDL_Rect dest_rect;
+        int SCALE_FACTOR = 2;
+        dest_rect.w = char_sprite_clips[frame / 4].w * SCALE_FACTOR;   // scale_factor > 1 for enlargement
+        dest_rect.h = char_sprite_clips[frame / 4].h * SCALE_FACTOR;
+
+        // Center the scaled sprite at the player's position
+        dest_rect.x = player.get_x() - dest_rect.w / 2;
+        dest_rect.y = player.get_y() - dest_rect.h / 2;
         player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[frame / 4], player_direction);
 
         // Render platforms
@@ -262,6 +271,8 @@ int main( int argc, char* args[] ) {
             render_rect.y -= camera.rect.y;
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
             SDL_RenderFillRect(renderer, &render_rect);
+            // TODO: randomly select section of platform texture to render
+
         }
 
         // Update Screen

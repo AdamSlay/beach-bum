@@ -7,9 +7,9 @@
 const int SCREEN_HEIGHT = 2000;
 const int SCREEN_WIDTH = 2000;
 const int COLLIDER_EDGE_BUFFER = 5;
-const int GRAVITY = 2000;
-const int JUMP_FORCE = 1400;  // for sustained jump
-const int JUMP_TAPER = 100;  // for sustained jump
+const int GRAVITY = 1900;
+const int JUMP_FORCE = 1500;  // for sustained jump
+const int JUMP_TAPER = 800;  // for sustained jump
 
 Player::Player() :
         width(32),
@@ -67,8 +67,13 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     // apply gravity
     vel_y += GRAVITY * delta_time;
 
-    if (vel_y > 0 && !grounded) {
-        vel_y += (GRAVITY * 1.2) * delta_time;
+    // if you're at the peak of your jump, lighten gravity a bit
+    if (vel_y > 0 && vel_y < 200 && !grounded) {
+        vel_y += (GRAVITY * 0.1) * delta_time;
+    }
+
+    else if (vel_y > 200 && !grounded) {
+        vel_y += (GRAVITY * 2) * delta_time;
         jumping = false;
     }
 
@@ -81,7 +86,6 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     pos_x += vel_x * delta_time;
     collider.x = pos_x + COLLIDER_EDGE_BUFFER;
     for (SDL_Rect object: objects) {
-
         if (check_collision(collider, object)) {
             jumping = false;
             // player is moving right and collided with object
