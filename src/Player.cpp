@@ -4,8 +4,8 @@
 #include "utils.h"
 
 
-const int SCREEN_HEIGHT = 2000;
-const int SCREEN_WIDTH = 2000;
+const int SCREEN_HEIGHT = 800;
+const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 1900;
 const int JUMP_FORCE = 1500;  // for sustained jump

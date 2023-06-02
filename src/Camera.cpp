@@ -36,14 +36,25 @@ void Camera::center_on_player(const Player& player) {
     int edge_distance_y = std::min(rect.y, level_height - (rect.y + rect.h));
 
     // calculate the smoothing factor based on the distance to the edge
-    float smoothing_x = calculate_smoothing(edge_distance_x, 0.04f, 1.0f);
+    float smoothing_x = calculate_smoothing(edge_distance_x, 0.04f, 0.5f);
     float smoothing_y = calculate_smoothing(edge_distance_y, 0.04f, 1.0f);
 
     rect.x = rect.x + (desired_x - rect.x) * smoothing_x;
     rect.y = rect.y + (desired_y - rect.y) * smoothing_y;
 
-    if (rect.x < 0) rect.x = 0;
-    if (rect.y < 0) rect.y = 0;
-    if (rect.x > level_width - rect.w) rect.x = level_width - rect.w;
-    if (rect.y > level_height - rect.h) rect.y = level_height - rect.h;
+    if (rect.x < 0) {
+        rect.x = 0;
+    }
+
+    if (rect.y < 0) {
+        rect.y = 0;
+    }
+
+    if (rect.x > level_width - rect.w) {
+        rect.x = level_width - rect.w;
+    }
+
+    if (rect.y > level_height - rect.h) {
+        rect.y = level_height - rect.h;
+    }
 }
