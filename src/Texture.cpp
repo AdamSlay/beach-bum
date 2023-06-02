@@ -61,9 +61,11 @@ void Texture::render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect view
     SDL_RenderSetViewport(renderer, &viewport);
     SDL_Rect renderQuad {pos_x, pos_y, width, height};
 
+    float scale = 1.2;
+
     if (clip != nullptr) {
-        renderQuad.w = clip->w;
-        renderQuad.h = clip->h;
+        renderQuad.w = (clip->w) * scale;
+        renderQuad.h = (clip->h) * scale;
     }
     // flip texture horizontally to face left
     if (direction == 1) {

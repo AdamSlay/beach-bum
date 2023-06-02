@@ -10,6 +10,7 @@ const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 1900;
 const int JUMP_FORCE = 1500;  // for sustained jump
 const int JUMP_TAPER = 800;  // for sustained jump
+const float PLAYER_SCALE = 1.2f;
 
 Player::Player() :
         width(32),
@@ -17,15 +18,15 @@ Player::Player() :
         velocity(400.0f),
         initial_jump_velocity(400.0f),
         sustained_jump_velocity(),
-        pos_x(0),
-        pos_y(0),
+        pos_x(500),
+        pos_y(300),
         vel_x(0.0f),
         vel_y(0.0f),
         collider(),
         jumping(false),
         grounded(false) {
-    collider.w  = width - 10;  // 5 pixel buffer on each side
-    collider.h = height - 10;
+    collider.w  = (width * PLAYER_SCALE) - 10;  // 5 pixel buffer on each side
+    collider.h = (height * PLAYER_SCALE) - 10;
 }
 
 void Player::handle_event(SDL_Event& e) {
@@ -43,9 +44,6 @@ void Player::handle_event(SDL_Event& e) {
                 sustained_jump_velocity = 0;
             }
         }
-    }
-    else if(currentKeyStates[SDL_SCANCODE_DOWN]) {
-        vel_y = velocity;
     }
     else {
         jumping = false;
@@ -71,7 +69,6 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     if (vel_y > 0 && vel_y < 200 && !grounded) {
         vel_y += (GRAVITY * 0.1) * delta_time;
     }
-
     else if (vel_y > 200 && !grounded) {
         vel_y += (GRAVITY * 2) * delta_time;
         jumping = false;

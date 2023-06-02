@@ -32,7 +32,7 @@ const int X_MIN = 100;
 const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
 const int Y_MIN = 200;
 const int Y_MAX = 300; // ensure platform doesn't exceed level bounds
-const int PLATFORM_COUNT = 10; // number of platforms to generate
+const int PLATFORM_COUNT = 3; // number of platforms to generate
 
 int player_direction{};  // 0 = right, 1 = left
 SDL_Window* window = nullptr;
@@ -159,16 +159,16 @@ int main( int argc, char* args[] ) {
 
     // starting_block and ground rects for testing collision
     SDL_Rect starting_block;
-    starting_block.x = 0;
-    starting_block.y = 300;
+    starting_block.x = 100;
+    starting_block.y = 400;
     starting_block.w = 100;
     starting_block.h = 100;
     SDL_Rect ground;
-    ground.x = 0;
-    ground.y = 400;
-    ground.w = 2000;
-    ground.h = 200;
-    std::vector<SDL_Rect> colliders = {starting_block, ground};
+    ground.x = 200;
+    ground.y = 350;
+    ground.w = 600;
+    ground.h = 500;
+    std::vector<SDL_Rect> colliders = {ground};
 
     // Use a random number generator
     std::default_random_engine generator(std::time(nullptr));
@@ -255,7 +255,7 @@ int main( int argc, char* args[] ) {
 
         // Render player
         SDL_Rect dest_rect;
-        int SCALE_FACTOR = 2;
+        int SCALE_FACTOR = 10;
         dest_rect.w = char_sprite_clips[frame / 4].w * SCALE_FACTOR;   // scale_factor > 1 for enlargement
         dest_rect.h = char_sprite_clips[frame / 4].h * SCALE_FACTOR;
 
