@@ -8,8 +8,8 @@ const int SCREEN_HEIGHT = 800;
 const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 1900;
-const int JUMP_FORCE = 1500;  // for sustained jump
-const int JUMP_TAPER = 800;  // for sustained jump
+const int JUMP_FORCE = 2000;  // for sustained jump
+const int JUMP_TAPER = 1000;  // for sustained jump
 const float PLAYER_SCALE = 1.2f;
 
 Player::Player() :
@@ -46,6 +46,9 @@ void Player::handle_event(SDL_Event& e) {
         }
     }
     else {
+        if (jumping && vel_y < 0) {
+            vel_y = 0;  // stop upward movement if jump button is released
+        }
         jumping = false;
     }
 
@@ -66,8 +69,9 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     vel_y += GRAVITY * delta_time;
 
     // if you're at the peak of your jump, lighten gravity a bit
-    if (vel_y > 0 && vel_y < 200 && !grounded) {
+    if (vel_y > 0 && vel_y < 100 && !grounded) {
         vel_y += (GRAVITY * 0.1) * delta_time;
+        vel_x *= 1.2;
     }
     else if (vel_y > 200 && !grounded) {
         vel_y += (GRAVITY * 2) * delta_time;
