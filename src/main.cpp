@@ -1,11 +1,11 @@
 #include <ctime>
 #include <iostream>
+#include <random>
 #include <string>
 #include <vector>
 
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
-#include <random>
 
 #include "Camera.h"
 #include "Player.h"
@@ -164,9 +164,9 @@ int main( int argc, char* args[] ) {
     starting_block.w = 100;
     starting_block.h = 100;
     SDL_Rect ground;
-    ground.x = 200;
+    ground.x = 100;
     ground.y = 350;
-    ground.w = 600;
+    ground.w = 800;
     ground.h = 500;
     std::vector<SDL_Rect> colliders = {ground};
 

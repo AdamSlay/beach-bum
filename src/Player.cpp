@@ -8,15 +8,15 @@ const int SCREEN_HEIGHT = 800;
 const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 1900;
-const int JUMP_FORCE = 10;  // for sustained jump
-const int JUMP_TAPER = 10;  // for sustained jump
+const int JUMP_FORCE = 0;  // for sustained jump
+const int JUMP_TAPER = 0;  // for sustained jump
 const float PLAYER_SCALE = 1.2f;
 
 Player::Player() :
         width(32),
         height(48),
         velocity(400.0f),
-        initial_jump_velocity(700.0f),
+        initial_jump_velocity(750.0f),
         sustained_jump_velocity(),
         pos_x(500),
         pos_y(300),
@@ -67,6 +67,11 @@ void Player::handle_event(SDL_Event& e) {
 void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     // apply gravity
     vel_y += GRAVITY * delta_time;
+
+    // cap vel_y at terminal velocity of 1000
+    if (vel_y > 1000) {
+        vel_y = 1000;
+    }
 
     // if you're at the peak of your jump, lighten gravity a bit
     if (vel_y > 0 && vel_y < 150 && !grounded) {
@@ -144,12 +149,10 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
 }
 
 void Player::jump() {
-   if (!jumping && grounded) {
-       vel_y -= initial_jump_velocity;
-       jumping = true;
-       grounded = false;
-       sustained_jump_velocity = JUMP_FORCE;
-   }
+   vel_y -= initial_jump_velocity;
+   jumping = true;
+   grounded = false;
+   sustained_jump_velocity = JUMP_FORCE;
 }
 
 void Player::render(int camera_x, int camera_y,Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0) const {
