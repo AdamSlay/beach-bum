@@ -11,6 +11,7 @@ const int GRAVITY = 1900;
 const int JUMP_FORCE = 0;  // for sustained jump
 const int JUMP_TAPER = 0;  // for sustained jump
 const float PLAYER_SCALE = 1.2f;
+const std::tuple SPAWN_LOCATION = {500, 300};
 
 Player::Player() :
         width(32),
@@ -144,7 +145,8 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
         pos_y = 0;
     }
     else if (pos_y + height > SCREEN_HEIGHT) {
-        pos_y = SCREEN_HEIGHT - height;
+        pos_x = std::get<0>(SPAWN_LOCATION);
+        pos_y = std::get<1>(SPAWN_LOCATION);
     }
 }
 
