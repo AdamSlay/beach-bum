@@ -23,7 +23,6 @@ private:
     const int height;
     const float velocity;
     const float initial_jump_velocity;
-    float sustained_jump_velocity;
     int pos_x, pos_y;
     float vel_x, vel_y;
     SDL_Rect collider;

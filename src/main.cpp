@@ -102,8 +102,8 @@ bool loadMedia() {
         std::cout << "Failed to load char_sprite_sheet!" << std::endl;
         success = false;
     }
+    // create char sprite clips
     else {
-        // create char sprite clips
         for (int i = 0; i < 8; i++) {
             char_sprite_clips[i].x = (i * 64) + 12;
             char_sprite_clips[i].y = 52;

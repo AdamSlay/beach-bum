@@ -18,7 +18,6 @@ Player::Player() :
         height(48),
         velocity(400.0f),
         initial_jump_velocity(750.0f),
-        sustained_jump_velocity(),
         pos_x(500),
         pos_y(300),
         vel_x(0.0f),
@@ -38,12 +37,6 @@ void Player::handle_event(SDL_Event& e) {
     if(currentKeyStates[SDL_SCANCODE_UP]) {
         if (!jumping && grounded) {
             jump();
-        }
-        else if (jumping) {
-            sustained_jump_velocity -= JUMP_TAPER;
-            if (sustained_jump_velocity <= 0) {
-                sustained_jump_velocity = 0;
-            }
         }
     }
     else {
@@ -82,11 +75,6 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     else if (vel_y > 200 && !grounded) {
         vel_y += (GRAVITY * 1.1) * delta_time;
         jumping = false;
-    }
-
-    if (jumping) {
-        vel_y -= sustained_jump_velocity * delta_time;
-        sustained_jump_velocity -= JUMP_TAPER * delta_time;
     }
 
     // move player along x-axis then check for collision
@@ -145,6 +133,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
         pos_y = 0;
     }
     else if (pos_y + height > SCREEN_HEIGHT) {
+        // respawn at spawn location if you touch the bottom of the level
         pos_x = std::get<0>(SPAWN_LOCATION);
         pos_y = std::get<1>(SPAWN_LOCATION);
     }
@@ -154,7 +143,6 @@ void Player::jump() {
    vel_y -= initial_jump_velocity;
    jumping = true;
    grounded = false;
-   sustained_jump_velocity = JUMP_FORCE;
 }
 
 void Player::render(int camera_x, int camera_y,Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0) const {
