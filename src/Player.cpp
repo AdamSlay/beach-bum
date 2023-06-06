@@ -8,10 +8,10 @@ const int SCREEN_HEIGHT = 800;
 const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 1900;
-const int JUMP_FORCE = 0;  // for sustained jump
-const int JUMP_TAPER = 0;  // for sustained jump
 const float PLAYER_SCALE = 1.2f;
 const std::tuple SPAWN_LOCATION = {500, 300};
+
+int JUMP_COUNT = 0;
 
 Player::Player() :
         width(32),
@@ -33,17 +33,32 @@ void Player::handle_event(SDL_Event& e) {
     // keyboard state
     const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
 
-    // y-axis
-    if(currentKeyStates[SDL_SCANCODE_UP]) {
-        if (!jumping && grounded) {
-            jump();
+    // check if jump key has been pressed
+    if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
+        switch (e.key.keysym.sym) {
+            case SDLK_UP:
+                // if you are grounded, jump
+                if (!jumping && grounded) {
+                    jump();
+                    JUMP_COUNT += 1;
+                }
+                // if you are in the air and have not double jumped, double jump
+                else if (!grounded && JUMP_COUNT < 2) {
+                    vel_y = 0;
+                    jump();
+                    JUMP_COUNT += 2;
+                }
+                break;
+            default:
+                break;
         }
     }
-    else {
+
+    if(!currentKeyStates[SDL_SCANCODE_UP]) {
+        // the jump button is no longer being held down
         if (jumping && vel_y < 0) {
             vel_y = 0;  // stop upward movement if jump button is released
         }
-        jumping = false;
     }
 
     // x-axis
@@ -74,7 +89,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     }
     else if (vel_y > 200 && !grounded) {
         vel_y += (GRAVITY * 1.1) * delta_time;
-        jumping = false;
+//        jumping = false;
     }
 
     // move player along x-axis then check for collision
@@ -111,6 +126,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
                 jumping = false;
                 grounded = true;
                 vel_y = 0;
+                JUMP_COUNT = 0;
             }
             // player is jumping and collided with object
             else if (vel_y < 0) {
