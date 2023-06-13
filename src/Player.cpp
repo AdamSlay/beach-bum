@@ -46,7 +46,7 @@ void Player::handle_event(SDL_Event& e) {
                 else if (!grounded && JUMP_COUNT < 2) {
                     vel_y = 0;
                     jump();
-                    JUMP_COUNT += 2;
+                    JUMP_COUNT += 2;  // here we add 2 to prevent player from having 2 jumps if they fell off a platform
                 }
                 break;
             default:
@@ -89,7 +89,6 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     }
     else if (vel_y > 200 && !grounded) {
         vel_y += (GRAVITY * 1.1) * delta_time;
-//        jumping = false;
     }
 
     // move player along x-axis then check for collision
