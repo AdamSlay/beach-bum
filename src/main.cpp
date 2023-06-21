@@ -1,7 +1,6 @@
 #include <ctime>
 #include <iostream>
 #include <random>
-#include <string>
 #include <vector>
 
 #include <SDL2/SDL.h>
@@ -23,6 +22,8 @@ const int FRAME_DURATION = 1000 / FPS;
 const int RUNNING_ANIMATION_FRAMES = 8;
 const int RIGHT = 0;
 const int LEFT = 1;
+const int PLAYER_SPRITE_WIDTH = 32;
+const int PLAYER_SPRITE_HEIGHT = 48;
 const float PARALLAX_FACTOR = 0.9f;  // less than 1 to make the background move slower
 
 // Define platform generation parameters
@@ -107,8 +108,8 @@ bool loadMedia() {
         for (int i = 0; i < 8; i++) {
             char_sprite_clips[i].x = (i * 64) + 12;
             char_sprite_clips[i].y = 52;
-            char_sprite_clips[i].w = 32;
-            char_sprite_clips[i].h = 48;
+            char_sprite_clips[i].w = PLAYER_SPRITE_WIDTH;
+            char_sprite_clips[i].h = PLAYER_SPRITE_HEIGHT;
         }
     }
 
@@ -255,14 +256,15 @@ int main( int argc, char* args[] ) {
 
         // Render player
         SDL_Rect dest_rect;
+        int anim_frame = frame / 4;
         int SCALE_FACTOR = 10;
-        dest_rect.w = char_sprite_clips[frame / 4].w * SCALE_FACTOR;   // scale_factor > 1 for enlargement
-        dest_rect.h = char_sprite_clips[frame / 4].h * SCALE_FACTOR;
+        dest_rect.w = PLAYER_SPRITE_WIDTH * SCALE_FACTOR;   // scale_factor > 1 for enlargement
+        dest_rect.h = PLAYER_SPRITE_HEIGHT * SCALE_FACTOR;
 
         // Center the scaled sprite at the player's position
         dest_rect.x = player.get_x() - dest_rect.w / 2;
         dest_rect.y = player.get_y() - dest_rect.h / 2;
-        player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[frame / 4], player_direction);
+        player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[anim_frame], player_direction);
 
         // Render platforms
         for (auto &platform : platforms) {

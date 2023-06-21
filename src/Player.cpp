@@ -17,7 +17,7 @@ Player::Player() :
         width(32),
         height(48),
         velocity(400.0f),
-        initial_jump_velocity(750.0f),
+        initial_jump_velocity(650.0f),
         pos_x(500),
         pos_y(300),
         vel_x(0.0f),
