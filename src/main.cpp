@@ -303,7 +303,6 @@ int main( int argc, char* args[] ) {
             render_rect.y -= camera.rect.y;
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
             platform_texture.render(render_rect.x, render_rect.y, renderer, full_viewport, &platform_sprite_clips[platform_type], 0, 0.55);
-            // TODO: randomly select section of platform texture to render
         }
 
         // Render ground
