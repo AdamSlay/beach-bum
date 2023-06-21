@@ -27,22 +27,23 @@ const int PLAYER_SPRITE_HEIGHT = 48;
 const float PARALLAX_FACTOR = 0.9f;  // less than 1 to make the background move slower
 
 // Define platform generation parameters
-const int PLATFORM_WIDTH = 100;
-const int PLATFORM_HEIGHT = 12;
+const int PLATFORM_WIDTH = 128;
+const int PLATFORM_HEIGHT = 16;
 const int X_MIN = 100;
 const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
 const int Y_MIN = 200;
-const int Y_MAX = 300; // ensure platform doesn't exceed level bounds
+const int Y_MAX = 280; // ensure platform doesn't exceed level bounds
 const int PLATFORM_COUNT = 3; // number of platforms to generate
 
 int player_direction{};  // 0 = right, 1 = left
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 Texture bg_texture;
-Texture minimap_texture;
+Texture platform_texture;
 Texture char_sprite_sheet;
 Texture char_sprite_sheet_idle;
 SDL_Rect char_sprite_clips[RUNNING_ANIMATION_FRAMES];
+SDL_Rect platform_sprite_clips[4];
 
 bool init() {
     /*
@@ -90,7 +91,7 @@ bool init() {
 bool loadMedia() {
     // Asset file paths
     std::string bg_path = "../assets/bb_90s_pattern_dark.png";
-    std::string minimap_path = "../assets/up.png";
+    std::string platform_path = "../assets/test_platforms.png";
     std::string char_path = "../assets/bb_run_sheet.png";
     std::string char_idle_path = "../assets/bb.png";
 
@@ -100,14 +101,22 @@ bool loadMedia() {
         std::cout << "Failed to load bg_texture!" << std::endl;
         success = false;
     }
+    // load platform texture
+    if (!platform_texture.loadFromFile(platform_path, renderer)) {
+        std::cout << "Failed to load platform_texture!" << std::endl;
+        success = false;
+    }
+    else {
+        for (int i = 0; i < 4; i++) {
+            platform_sprite_clips[i].x = 0;
+            platform_sprite_clips[i].y = i * 64;
+            platform_sprite_clips[i].w = 256;
+            platform_sprite_clips[i].h = 64;
+        }
+    }
     // load character texture
     if (!char_sprite_sheet.loadFromFile(char_path, renderer)) {
         std::cout << "Failed to load char_sprite_sheet!" << std::endl;
-        success = false;
-    }
-    // load character idle texture
-    if(!char_sprite_sheet_idle.loadFromFile(char_idle_path, renderer)) {
-        std::cout << "Failed to load char_sprite_sheet_idle!" << std::endl;
         success = false;
     }
     // create char sprite clips
@@ -119,6 +128,11 @@ bool loadMedia() {
             char_sprite_clips[i].h = PLAYER_SPRITE_HEIGHT;
         }
     }
+    // load character idle texture
+    if(!char_sprite_sheet_idle.loadFromFile(char_idle_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_idle!" << std::endl;
+        success = false;
+    }
 
     return success;
 }
@@ -126,7 +140,7 @@ bool loadMedia() {
 void close() {
     // Free texture resources
     bg_texture.free();
-    minimap_texture.free();
+    platform_texture.free();
     char_sprite_sheet.free();
 
     //Destroy window/renderer
@@ -176,12 +190,15 @@ int main( int argc, char* args[] ) {
     ground.y = 350;
     ground.w = 800;
     ground.h = 500;
-    std::vector<SDL_Rect> colliders = {ground};
+    std::vector<SDL_Rect> colliders {ground};
+    std::vector<SDL_Rect> platforms {};
 
     // Use a random number generator
     std::default_random_engine generator(std::time(nullptr));
-    std::uniform_int_distribution<int> distributionX(50, 100);
+    std::uniform_int_distribution<int> distributionX(50, 200);
     std::uniform_int_distribution<int> distributionY(Y_MIN, Y_MAX);
+    std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
+    int platform_type = distributionPlatform(generator);
 
     auto& last_platform = starting_block;
     for (int i = 0; i < PLATFORM_COUNT; i++) {
@@ -195,10 +212,10 @@ int main( int argc, char* args[] ) {
 
         // Add to colliders
         colliders.push_back(new_platform);
+        platforms.push_back(new_platform);
         last_platform = new_platform;
     }
 
-    std::vector<SDL_Rect> platforms = colliders;
 
     // BG tile
     SDL_Rect bg_src_rect, bg_dest_rect;
@@ -285,10 +302,16 @@ int main( int argc, char* args[] ) {
             render_rect.x -= camera.rect.x;
             render_rect.y -= camera.rect.y;
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-            SDL_RenderFillRect(renderer, &render_rect);
+            platform_texture.render(render_rect.x, render_rect.y, renderer, full_viewport, &platform_sprite_clips[platform_type], 0, 0.55);
             // TODO: randomly select section of platform texture to render
-
         }
+
+        // Render ground
+        SDL_Rect render_rect = ground;
+        render_rect.x -= camera.rect.x;
+        render_rect.y -= camera.rect.y;
+        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+        SDL_RenderFillRect(renderer, &render_rect);
 
         // Update Screen
         SDL_RenderPresent(renderer);

@@ -56,12 +56,10 @@ void Texture::free() {
     }
 }
 
-void Texture::render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0) {
+void Texture::render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0, float scale = 1) {
     // render the texture to given viewport
     SDL_RenderSetViewport(renderer, &viewport);
     SDL_Rect renderQuad {pos_x, pos_y, width, height};
-
-    float scale = 1.2;
 
     if (clip != nullptr) {
         renderQuad.w = (clip->w) * scale;
