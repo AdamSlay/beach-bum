@@ -28,7 +28,7 @@ const float PARALLAX_FACTOR = 0.9f;  // less than 1 to make the background move 
 
 // Define platform generation parameters
 const int PLATFORM_WIDTH = 128;
-const int PLATFORM_HEIGHT = 16;
+const int PLATFORM_HEIGHT = 32;
 const int X_MIN = 100;
 const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
 const int Y_MIN = 200;
@@ -195,7 +195,7 @@ int main( int argc, char* args[] ) {
 
     // Use a random number generator
     std::default_random_engine generator(std::time(nullptr));
-    std::uniform_int_distribution<int> distributionX(50, 200);
+    std::uniform_int_distribution<int> distributionX(50, 100);
     std::uniform_int_distribution<int> distributionY(Y_MIN, Y_MAX);
     std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
     int platform_type = distributionPlatform(generator);
