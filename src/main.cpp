@@ -40,9 +40,13 @@ SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 Texture bg_texture;
 Texture platform_texture;
-Texture char_sprite_sheet;
+Texture char_sprite_sheet_run;
 Texture char_sprite_sheet_idle;
-SDL_Rect char_sprite_clips[RUNNING_ANIMATION_FRAMES];
+Texture char_sprite_sheet_jump;
+Texture char_sprite_sheet_fall;
+SDL_Rect char_run_anim_clips[RUNNING_ANIMATION_FRAMES];
+SDL_Rect char_jump_anim_clips[1];
+SDL_Rect char_fall_anim_clips[1];
 SDL_Rect platform_sprite_clips[4];
 
 bool init() {
@@ -92,7 +96,9 @@ bool loadMedia() {
     // Asset file paths
     std::string bg_path = "../assets/bb_90s_pattern_dark.png";
     std::string platform_path = "../assets/test_platforms.png";
-    std::string char_path = "../assets/bb_run_sheet.png";
+    std::string char_run_path = "../assets/bb_run_sheet.png";
+    std::string char_jump_path = "../assets/bb_jump_sheet.png";
+    std::string char_fall_path = "../assets/bb_jump_sheet.png";
     std::string char_idle_path = "../assets/bb.png";
 
     bool success = true;
@@ -115,18 +121,42 @@ bool loadMedia() {
         }
     }
     // load character texture
-    if (!char_sprite_sheet.loadFromFile(char_path, renderer)) {
-        std::cout << "Failed to load char_sprite_sheet!" << std::endl;
+    if (!char_sprite_sheet_run.loadFromFile(char_run_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_run!" << std::endl;
         success = false;
     }
     // create char sprite clips
     else {
         for (int i = 0; i < 8; i++) {
-            char_sprite_clips[i].x = (i * 64) + 12;
-            char_sprite_clips[i].y = 52;
-            char_sprite_clips[i].w = PLAYER_SPRITE_WIDTH;
-            char_sprite_clips[i].h = PLAYER_SPRITE_HEIGHT;
+            char_run_anim_clips[i].x = (i * 64) + 12;
+            char_run_anim_clips[i].y = 52;
+            char_run_anim_clips[i].w = PLAYER_SPRITE_WIDTH;
+            char_run_anim_clips[i].h = PLAYER_SPRITE_HEIGHT;
         }
+    }
+    // load character jump texture
+    if (!char_sprite_sheet_jump.loadFromFile(char_jump_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_jump!" << std::endl;
+        success = false;
+    }
+    // create char sprite clips
+    else {
+        char_jump_anim_clips[0].x = (2 * 64) + 12;
+        char_jump_anim_clips[0].y = 40;
+        char_jump_anim_clips[0].w = PLAYER_SPRITE_WIDTH;
+        char_jump_anim_clips[0].h = PLAYER_SPRITE_HEIGHT + 18;
+    }
+    // load character fall texture
+    if (!char_sprite_sheet_fall.loadFromFile(char_fall_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_fall!" << std::endl;
+        success = false;
+    }
+        // create char sprite clips
+    else {
+        char_fall_anim_clips[0].x = (6 * 64) + 12;
+        char_fall_anim_clips[0].y = 40;
+        char_fall_anim_clips[0].w = PLAYER_SPRITE_WIDTH;
+        char_fall_anim_clips[0].h = PLAYER_SPRITE_HEIGHT + 18;
     }
     // load character idle texture
     if(!char_sprite_sheet_idle.loadFromFile(char_idle_path, renderer)) {
@@ -141,7 +171,7 @@ void close() {
     // Free texture resources
     bg_texture.free();
     platform_texture.free();
-    char_sprite_sheet.free();
+    char_sprite_sheet_run.free();
 
     //Destroy window/renderer
     SDL_DestroyRenderer(renderer);
@@ -290,10 +320,16 @@ int main( int argc, char* args[] ) {
         dest_rect.x = player.get_x() - dest_rect.w / 2;
         dest_rect.y = player.get_y() - dest_rect.h / 2;
         if (state == "running") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[anim_frame], player_direction);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_run, renderer, full_viewport, &char_run_anim_clips[anim_frame], player_direction);
+        }
+        else if (state == "jumping") {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_jump, renderer, full_viewport, &char_jump_anim_clips[0], player_direction);
+        }
+        else if (state == "falling") {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_fall, renderer, full_viewport, &char_fall_anim_clips[0], player_direction);
         }
         else {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, full_viewport, &char_sprite_clips[0], player_direction);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, full_viewport, &char_run_anim_clips[0], player_direction);
         }
 
         // Render platforms

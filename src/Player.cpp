@@ -157,6 +157,13 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects, std::string&
     if (vel_x != 0 && grounded) {
         state = "running";
     }
+    else if (!grounded) {
+        if (vel_y > 0)
+            state = "falling";
+        else {
+            state = "jumping";
+        }
+    }
     else {
         state = "idle";
     }
