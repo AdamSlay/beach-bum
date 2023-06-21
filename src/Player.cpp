@@ -73,7 +73,7 @@ void Player::handle_event(SDL_Event& e) {
     }
 }
 
-void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
+void Player::move(float delta_time, std::vector<SDL_Rect>& objects, std::string& state) {
     // apply gravity
     vel_y += GRAVITY * delta_time;
 
@@ -151,6 +151,14 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
         // respawn at spawn location if you touch the bottom of the level
         pos_x = std::get<0>(SPAWN_LOCATION);
         pos_y = std::get<1>(SPAWN_LOCATION);
+    }
+
+    // determine if running
+    if (vel_x != 0 && grounded) {
+        state = "running";
+    }
+    else {
+        state = "idle";
     }
 }
 

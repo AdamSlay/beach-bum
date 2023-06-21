@@ -10,7 +10,7 @@ class Player {
 public:
     Player();
     void handle_event(SDL_Event& e);
-    void move(float delta_time, std::vector<SDL_Rect>& objects);
+    void move(float delta_time, std::vector<SDL_Rect>& objects, std::string& state);
     void render(int camera_x, int camera_y, Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip, int direction) const;
     void jump();
     int get_x() const;

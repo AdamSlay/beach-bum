@@ -41,6 +41,7 @@ SDL_Renderer* renderer = nullptr;
 Texture bg_texture;
 Texture minimap_texture;
 Texture char_sprite_sheet;
+Texture char_sprite_sheet_idle;
 SDL_Rect char_sprite_clips[RUNNING_ANIMATION_FRAMES];
 
 bool init() {
@@ -91,6 +92,7 @@ bool loadMedia() {
     std::string bg_path = "../assets/bb_90s_pattern_dark.png";
     std::string minimap_path = "../assets/up.png";
     std::string char_path = "../assets/bb_run_sheet.png";
+    std::string char_idle_path = "../assets/bb.png";
 
     bool success = true;
     // load background texture
@@ -101,6 +103,11 @@ bool loadMedia() {
     // load character texture
     if (!char_sprite_sheet.loadFromFile(char_path, renderer)) {
         std::cout << "Failed to load char_sprite_sheet!" << std::endl;
+        success = false;
+    }
+    // load character idle texture
+    if(!char_sprite_sheet_idle.loadFromFile(char_idle_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_idle!" << std::endl;
         success = false;
     }
     // create char sprite clips
@@ -238,7 +245,8 @@ int main( int argc, char* args[] ) {
         }
 
         // process player actions after calculating time since last frame
-        player.move(delta_time, colliders);
+        std::string state = "idle";
+        player.move(delta_time, colliders, state);
         camera.center_on_player(player);
 
         // Clear Screen
@@ -264,7 +272,12 @@ int main( int argc, char* args[] ) {
         // Center the scaled sprite at the player's position
         dest_rect.x = player.get_x() - dest_rect.w / 2;
         dest_rect.y = player.get_y() - dest_rect.h / 2;
-        player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[anim_frame], player_direction);
+        if (state == "running") {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet, renderer, full_viewport, &char_sprite_clips[anim_frame], player_direction);
+        }
+        else {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, full_viewport, &char_sprite_clips[0], player_direction);
+        }
 
         // Render platforms
         for (auto &platform : platforms) {
