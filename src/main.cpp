@@ -354,7 +354,7 @@ int main( int argc, char* args[] ) {
 
         // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
         frame_end = SDL_GetTicks64();
-        int frame_time = frame_end - frame_start; // time it took to process this frame
+        auto frame_time = frame_end - frame_start; // time it took to process this frame
         if (frame_time < FRAME_DURATION) {
             SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
         }
