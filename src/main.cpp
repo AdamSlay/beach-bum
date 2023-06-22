@@ -209,7 +209,9 @@ int main( int argc, char* args[] ) {
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
 
-    // starting_block and ground rects for testing collision
+    /**
+     * All of this block building and platform generation can be done in a Level class
+     */
     SDL_Rect starting_block;
     starting_block.x = 100;
     starting_block.y = 400;
@@ -245,8 +247,6 @@ int main( int argc, char* args[] ) {
         platforms.push_back(new_platform);
         last_platform = new_platform;
     }
-
-
     // BG tile
     SDL_Rect bg_src_rect, bg_dest_rect;
     bg_src_rect.x = 192;
@@ -257,6 +257,11 @@ int main( int argc, char* args[] ) {
     int tile_height = 128;
     bg_dest_rect.w = tile_width;
     bg_dest_rect.h = tile_height;
+    /**
+     * The above block building and platform generation can be done in a Level class
+     * You would basically take your level seed and build the level from that each time you load a level
+     */
+
 
     // main loop
     bool quit = false;
@@ -271,35 +276,21 @@ int main( int argc, char* args[] ) {
                 quit = true;
             }
             else {
-                // flip player direction if left or right arrow pressed
-                if (e.type == SDL_KEYDOWN) {
-
-                    switch (e.key.keysym.sym) {
-                        case SDLK_LEFT:
-                            player_direction = LEFT;
-                            break;
-                        case SDLK_RIGHT:
-                            player_direction = RIGHT;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
                 // handle player input
                 player.handle_event(e);
             }
         }
 
         // process player actions after calculating time since last frame
-        std::string state = "idle";
-        player.move(delta_time, colliders, state);
-        camera.center_on_player(player);
+        player.move(delta_time, colliders);
 
         // Clear Screen
         SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
         SDL_RenderClear(renderer);
 
+        /**
+         * Background rendering
+         */
         // Loop to tile the bg image across the screen
         for(int x = 0; x < LEVEL_WIDTH; x += tile_width) {
             for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
@@ -308,8 +299,10 @@ int main( int argc, char* args[] ) {
                 SDL_RenderCopy(renderer, bg_texture.getTexture(), &bg_src_rect, &bg_dest_rect);
             }
         }
-
-        // Render player
+        /**
+         * Player rendering
+         */
+        camera.center_on_player(player);
         SDL_Rect dest_rect;
         int anim_frame = frame / 4;
         int SCALE_FACTOR = 10;
@@ -319,20 +312,22 @@ int main( int argc, char* args[] ) {
         // Center the scaled sprite at the player's position
         dest_rect.x = player.get_x() - dest_rect.w / 2;
         dest_rect.y = player.get_y() - dest_rect.h / 2;
-        if (state == "running") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_run, renderer, full_viewport, &char_run_anim_clips[anim_frame], player_direction);
+        if (player.state == "running") {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_run, renderer, full_viewport, &char_run_anim_clips[anim_frame]);
         }
-        else if (state == "jumping") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_jump, renderer, full_viewport, &char_jump_anim_clips[0], player_direction);
+        else if (player.state == "jumping") {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_jump, renderer, full_viewport, &char_jump_anim_clips[0]);
         }
-        else if (state == "falling") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_fall, renderer, full_viewport, &char_fall_anim_clips[0], player_direction);
+        else if (player.state == "falling") {
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_fall, renderer, full_viewport, &char_fall_anim_clips[0]);
         }
         else {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, full_viewport, &char_run_anim_clips[0], player_direction);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, full_viewport, &char_run_anim_clips[0]);
         }
 
-        // Render platforms
+        /**
+         * Platform rendering
+         */
         for (auto &platform : platforms) {
             SDL_Rect render_rect = platform;
             render_rect.x -= camera.rect.x;
@@ -341,7 +336,9 @@ int main( int argc, char* args[] ) {
             platform_texture.render(render_rect.x, render_rect.y, renderer, full_viewport, &platform_sprite_clips[platform_type], 0, 0.55);
         }
 
-        // Render ground
+        /**
+         * Ground rendering
+         */
         SDL_Rect render_rect = ground;
         render_rect.x -= camera.rect.x;
         render_rect.y -= camera.rect.y;
@@ -354,11 +351,13 @@ int main( int argc, char* args[] ) {
         // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
         frame_end = SDL_GetTicks64();
         int frame_time = frame_end - frame_start; // time it took to process this frame
-
         if (frame_time < FRAME_DURATION) {
             SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
         }
 
+        /**
+         * frame count should be kept inside individual animator objects.
+         */
         ++frame;
         if (frame / 4 >= RUNNING_ANIMATION_FRAMES) {
             frame = 0;

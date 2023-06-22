@@ -9,6 +9,8 @@ const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 5;
 const int GRAVITY = 1900;
 const float PLAYER_SCALE = 1.2f;
+const int LEFT = 1;
+const int RIGHT = 0;
 const std::tuple SPAWN_LOCATION = {500, 300};
 
 int JUMP_COUNT = 0;
@@ -20,9 +22,12 @@ Player::Player() :
         initial_jump_velocity(650.0f),
         pos_x(500),
         pos_y(300),
+        direction(0),
         vel_x(0.0f),
         vel_y(0.0f),
         collider(),
+        animator(),
+        state("idle"),
         jumping(false),
         grounded(false) {
     collider.w  = (width * PLAYER_SCALE) - 10;  // 5 pixel buffer on each side
@@ -49,6 +54,12 @@ void Player::handle_event(SDL_Event& e) {
                     JUMP_COUNT += 2;  // here we add 2 to prevent player from having 2 jumps if they fell off a platform
                 }
                 break;
+            case SDLK_LEFT:
+                direction = LEFT;
+                break;
+            case SDLK_RIGHT:
+                direction = RIGHT;
+                break;
             default:
                 break;
         }
@@ -73,7 +84,7 @@ void Player::handle_event(SDL_Event& e) {
     }
 }
 
-void Player::move(float delta_time, std::vector<SDL_Rect>& objects, std::string& state) {
+void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
     // apply gravity
     vel_y += GRAVITY * delta_time;
 
@@ -175,7 +186,7 @@ void Player::jump() {
    grounded = false;
 }
 
-void Player::render(int camera_x, int camera_y,Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0) const {
+void Player::render(int camera_x, int camera_y, Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr) const {
     int render_x = pos_x - camera_x;
     int render_y = pos_y - camera_y;
     texture.render(render_x, render_y, renderer, viewport, clip, direction, PLAYER_SCALE);

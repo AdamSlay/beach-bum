@@ -10,7 +10,7 @@ find_package(SDL2_image REQUIRED)
 # Set the source files for your project
 set(SOURCE_FILES
         src/main.cpp
-        src/Texture.cpp src/Texture.h src/Player.cpp src/Player.h src/utils.cpp src/utils.h src/Camera.cpp src/Camera.h)
+        src/Texture.cpp src/Texture.h src/Player.cpp src/Player.h src/utils.cpp src/utils.h src/Camera.cpp src/Camera.h src/Animator.cpp src/Animator.h)
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
