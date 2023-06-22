@@ -1,7 +1,3 @@
-//
-// Created by adam slay on 6/22/23.
-//
-
 #include "Animator.h"
 
 /**

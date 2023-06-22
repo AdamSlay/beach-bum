@@ -1,7 +1,3 @@
-//
-// Created by adam slay on 5/25/23.
-//
-
 #include "Camera.h"
 
 Camera::Camera(SDL_Rect camera_rect, int width, int height) :

@@ -1,6 +1,3 @@
-//
-// Created by adam slay on 5/9/23.
-//
 #include <string>
 
 #include <SDL2/SDL.h>
