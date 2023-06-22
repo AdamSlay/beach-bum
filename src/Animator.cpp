@@ -28,6 +28,6 @@ Animator::~Animator() {
 
 }
 
-void Animator::animate(SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip, int direction, float scale) {
-    // render the texture to given viewport
+void Animator::animate(SDL_Renderer* renderer, SDL_Rect* clip, int direction, float scale) {
+    // render the texture
 }

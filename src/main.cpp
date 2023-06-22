@@ -197,8 +197,7 @@ int main( int argc, char* args[] ) {
         return 2;
     }
 
-    // Viewport & Camera
-    SDL_Rect full_viewport = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
+    // Camera
     SDL_Rect camera_rect = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
     Camera camera(camera_rect, LEVEL_WIDTH, LEVEL_HEIGHT);
 
@@ -312,17 +311,22 @@ int main( int argc, char* args[] ) {
         // Center the scaled sprite at the player's position
         dest_rect.x = player.get_x() - dest_rect.w / 2;
         dest_rect.y = player.get_y() - dest_rect.h / 2;
+        /**
+         * once animation building happens inside player's animator, the following if/else block can be replaced with
+         * player.render(camera)
+         * or maybe even player.render() if the player's animator has a reference to the camera
+         */
         if (player.state == "running") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_run, renderer, full_viewport, &char_run_anim_clips[anim_frame]);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_run, renderer, &char_run_anim_clips[anim_frame]);
         }
         else if (player.state == "jumping") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_jump, renderer, full_viewport, &char_jump_anim_clips[0]);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_jump, renderer, &char_jump_anim_clips[0]);
         }
         else if (player.state == "falling") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_fall, renderer, full_viewport, &char_fall_anim_clips[0]);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_fall, renderer, &char_fall_anim_clips[0]);
         }
         else {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, full_viewport, &char_run_anim_clips[0]);
+            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, &char_run_anim_clips[0]);
         }
 
         /**
@@ -333,7 +337,7 @@ int main( int argc, char* args[] ) {
             render_rect.x -= camera.rect.x;
             render_rect.y -= camera.rect.y;
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-            platform_texture.render(render_rect.x, render_rect.y, renderer, full_viewport, &platform_sprite_clips[platform_type], 0, 0.55);
+            platform_texture.render(render_rect.x, render_rect.y, renderer, &platform_sprite_clips[platform_type], 0, 0.55);
         }
 
         /**

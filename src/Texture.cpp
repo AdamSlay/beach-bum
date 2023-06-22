@@ -56,9 +56,8 @@ void Texture::free() {
     }
 }
 
-void Texture::render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr, int direction = 0, float scale = 1) {
-    // render the texture to given viewport
-    SDL_RenderSetViewport(renderer, &viewport);
+void Texture::render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect* clip = nullptr, int direction = 0, float scale = 1) {
+    // render the texture
     SDL_Rect renderQuad {pos_x, pos_y, width, height};
 
     if (clip != nullptr) {

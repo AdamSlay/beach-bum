@@ -186,10 +186,10 @@ void Player::jump() {
    grounded = false;
 }
 
-void Player::render(int camera_x, int camera_y, Texture& texture, SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip = nullptr) const {
+void Player::render(int camera_x, int camera_y, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip = nullptr) const {
     int render_x = pos_x - camera_x;
     int render_y = pos_y - camera_y;
-    texture.render(render_x, render_y, renderer, viewport, clip, direction, PLAYER_SCALE);
+    texture.render(render_x, render_y, renderer, clip, direction, PLAYER_SCALE);
 }
 
 int Player::get_x() const {

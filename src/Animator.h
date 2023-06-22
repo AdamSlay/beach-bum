@@ -8,7 +8,7 @@ class Animator {
 public:
     Animator();
     ~Animator();
-    void animate(SDL_Renderer* renderer, SDL_Rect viewport, SDL_Rect* clip, int direction, float scale);
+    void animate(SDL_Renderer* renderer, SDL_Rect* clip, int direction, float scale);
 };
 
 
