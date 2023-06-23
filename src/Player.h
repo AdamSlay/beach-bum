@@ -11,10 +11,10 @@
 class Player {
 public:
     std::string state;
-    Player();
+    explicit Player(SDL_Renderer* renderer);
     void handle_event(SDL_Event& e);
     void move(float delta_time, std::vector<SDL_Rect>& collision_objects);
-    void render(Camera& camera, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip) const;
+    void render(Camera& camera);
     void jump();
     int get_x() const;
     int get_y() const;

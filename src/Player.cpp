@@ -15,7 +15,7 @@ const std::tuple SPAWN_LOCATION = {500, 300};
 
 int JUMP_COUNT = 0;
 
-Player::Player() :
+Player::Player(SDL_Renderer* renderer) :
         width(32),
         height(48),
         velocity(400.0f),
@@ -26,7 +26,7 @@ Player::Player() :
         vel_x(0.0f),
         vel_y(0.0f),
         player_collider(),
-        animator(),
+        animator(renderer),
         state("idle"),
         jumping(false),
         grounded(false) {
@@ -186,13 +186,16 @@ void Player::jump() {
    grounded = false;
 }
 
-void Player::render(Camera& camera, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip = nullptr) const {
+void Player::render(Camera& camera) {
     SDL_Rect player_rect = {pos_x, pos_y, width, height};
     camera.center_on_object(player_rect);
 
     int render_x = pos_x - camera.camera_rect.x;
     int render_y = pos_y - camera.camera_rect.y;
-    texture.render(render_x, render_y, renderer, clip, direction, PLAYER_SCALE);
+    std::tuple<int, int> render_location = {render_x, render_y};
+
+    animator.animate(render_location, state, direction, PLAYER_SCALE);
+//    texture.render(render_x, render_y, renderer, clip, direction, PLAYER_SCALE);
 }
 
 int Player::get_x() const {

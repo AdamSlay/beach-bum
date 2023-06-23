@@ -6,9 +6,12 @@
 class Animator {
 
 public:
-    Animator();
+    SDL_Renderer* renderer;
+    std::string previous_state;
+    int frame;
+    Animator(SDL_Renderer* renderer);
     ~Animator();
-    void animate(SDL_Renderer* renderer, SDL_Rect* clip, int direction, float scale);
+    void animate(std::tuple<int, int> location, std::string state, int direction, float scale);
 };
 
 

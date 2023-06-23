@@ -1,29 +1,111 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
 #include "Animator.h"
+#include "Texture.h"
 
-/**
- * Player class contains an Animator as a member which takes care of all of the assets and animation
- * then you would just call player.render() which would call animator.animate(state=player_state) and render the current frame
- * on init(), the animator class acquires the assets and sets up the animation clip
- * it also keeps track of the current animation frame and the current animation clip
- * animation frames reset to 0 when the type of animation changes
- * this ensures that each animation starts from the beginning
- * The animator also needs to setup each animation clip
- * the clips are stored in a vector of SDL_Rects and correspond to the animation frames on the sprite sheet
- * the clips need to be split up into each animation type
- * for instance, the running animation has 8 frames, so the clips vector will have 8 elements
- * the frames for the running animation may be clips 0-7 on the sprite sheet
- * the jumping animation may be clips 8-11, etc.
- * these all need to be arranged into sequences that can be played from the beginning when you start that animation
- */
+const int PLAYER_SPRITE_WIDTH = 32;
+const int PLAYER_SPRITE_HEIGHT = 48;
+const int RUNNING_ANIMATION_FRAMES = 8;
 
-Animator::Animator() {
+struct Animation {
+    const std::string name;
+    const std::string file_path;
+    const int frame_count;
+    const Texture texture;
+    const std::vector<SDL_Rect> frames;
+};
+
+Texture char_sprite_sheet_run;
+Texture char_sprite_sheet_idle;
+Texture char_sprite_sheet_jump;
+Texture char_sprite_sheet_fall;
+SDL_Rect char_run_anim_clips[8];
+SDL_Rect char_jump_anim_clips[1];
+SDL_Rect char_fall_anim_clips[1];
+std::string char_run_path = "../assets/bb_run_sheet.png";
+std::string char_jump_path = "../assets/bb_jump_sheet.png";
+std::string char_fall_path = "../assets/bb_jump_sheet.png";
+std::string char_idle_path = "../assets/bb.png";
+
+Animator::Animator(SDL_Renderer* renderer): renderer(renderer), frame(0), previous_state("none"){
+    // load character texture
+    if (!char_sprite_sheet_run.loadFromFile(char_run_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_run!" << std::endl;
+    }
+        // create char sprite clips
+    else {
+        for (int i = 0; i < 8; i++) {
+            char_run_anim_clips[i].x = (i * 64) + 12;
+            char_run_anim_clips[i].y = 52;
+            char_run_anim_clips[i].w = PLAYER_SPRITE_WIDTH;
+            char_run_anim_clips[i].h = PLAYER_SPRITE_HEIGHT;
+        }
+    }
+    // load character jump texture
+    if (!char_sprite_sheet_jump.loadFromFile(char_jump_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_jump!" << std::endl;
+    }
+        // create char sprite clips
+    else {
+        char_jump_anim_clips[0].x = (2 * 64) + 12;
+        char_jump_anim_clips[0].y = 40;
+        char_jump_anim_clips[0].w = PLAYER_SPRITE_WIDTH;
+        char_jump_anim_clips[0].h = PLAYER_SPRITE_HEIGHT + 18;
+    }
+    // load character fall texture
+    if (!char_sprite_sheet_fall.loadFromFile(char_fall_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_fall!" << std::endl;
+    }
+        // create char sprite clips
+    else {
+        char_fall_anim_clips[0].x = (6 * 64) + 12;
+        char_fall_anim_clips[0].y = 40;
+        char_fall_anim_clips[0].w = PLAYER_SPRITE_WIDTH;
+        char_fall_anim_clips[0].h = PLAYER_SPRITE_HEIGHT + 18;
+    }
+    // load character idle texture
+    if(!char_sprite_sheet_idle.loadFromFile(char_idle_path, renderer)) {
+        std::cout << "Failed to load char_sprite_sheet_idle!" << std::endl;
+    }
 
 }
 
 Animator::~Animator() {
-
+    char_sprite_sheet_idle.free();
+    char_sprite_sheet_run.free();
+    char_sprite_sheet_jump.free();
+    char_sprite_sheet_fall.free();
 }
 
-void Animator::animate(SDL_Renderer* renderer, SDL_Rect* clip, int direction, float scale) {
-    // render the texture
+void Animator::animate(std::tuple<int, int> location, std::string state, int direction, float scale) {
+    int render_x = std::get<0>(location);
+    int render_y = std::get<1>(location);
+
+    int anim_frame = frame / 4;
+    if (previous_state != state) {
+        previous_state = state;
+        frame = 0;
+    }
+    else {
+        frame++;
+    }
+    if (frame / 4 >= 8) {
+        frame = 0;
+    }
+
+
+    if (state == "running") {
+        char_sprite_sheet_run.render(render_x, render_y, renderer, &char_run_anim_clips[anim_frame], direction, scale);
+    }
+    else if (state == "jumping") {
+        char_sprite_sheet_jump.render(render_x, render_y, renderer, &char_jump_anim_clips[0], direction, scale);
+    }
+    else if (state == "falling") {
+        char_sprite_sheet_fall.render(render_x, render_y, renderer, &char_fall_anim_clips[0], direction, scale);
+    }
+    else {
+        char_sprite_sheet_idle.render(render_x, render_y, renderer, &char_run_anim_clips[0], direction, scale);
+    }
 }

@@ -19,7 +19,6 @@ const int LEVEL_WIDTH = 1000;
 const int LEVEL_HEIGHT = 800;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
-const int RUNNING_ANIMATION_FRAMES = 8;
 const int RIGHT = 0;
 const int LEFT = 1;
 const int PLAYER_SPRITE_WIDTH = 32;
@@ -40,17 +39,10 @@ SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 Texture bg_texture;
 Texture platform_texture;
-Texture char_sprite_sheet_run;
-Texture char_sprite_sheet_idle;
-Texture char_sprite_sheet_jump;
-Texture char_sprite_sheet_fall;
-SDL_Rect char_run_anim_clips[RUNNING_ANIMATION_FRAMES];
-SDL_Rect char_jump_anim_clips[1];
-SDL_Rect char_fall_anim_clips[1];
 SDL_Rect platform_sprite_clips[4];
 
 bool init() {
-    /*
+    /**
      * Initialize SDL and create window
      */
 
@@ -96,10 +88,6 @@ bool loadMedia() {
     // Asset file paths
     std::string bg_path = "../assets/bb_90s_pattern_dark.png";
     std::string platform_path = "../assets/test_platforms.png";
-    std::string char_run_path = "../assets/bb_run_sheet.png";
-    std::string char_jump_path = "../assets/bb_jump_sheet.png";
-    std::string char_fall_path = "../assets/bb_jump_sheet.png";
-    std::string char_idle_path = "../assets/bb.png";
 
     bool success = true;
     // load background texture
@@ -120,49 +108,6 @@ bool loadMedia() {
             platform_sprite_clips[i].h = 64;
         }
     }
-    // load character texture
-    if (!char_sprite_sheet_run.loadFromFile(char_run_path, renderer)) {
-        std::cout << "Failed to load char_sprite_sheet_run!" << std::endl;
-        success = false;
-    }
-    // create char sprite clips
-    else {
-        for (int i = 0; i < 8; i++) {
-            char_run_anim_clips[i].x = (i * 64) + 12;
-            char_run_anim_clips[i].y = 52;
-            char_run_anim_clips[i].w = PLAYER_SPRITE_WIDTH;
-            char_run_anim_clips[i].h = PLAYER_SPRITE_HEIGHT;
-        }
-    }
-    // load character jump texture
-    if (!char_sprite_sheet_jump.loadFromFile(char_jump_path, renderer)) {
-        std::cout << "Failed to load char_sprite_sheet_jump!" << std::endl;
-        success = false;
-    }
-    // create char sprite clips
-    else {
-        char_jump_anim_clips[0].x = (2 * 64) + 12;
-        char_jump_anim_clips[0].y = 40;
-        char_jump_anim_clips[0].w = PLAYER_SPRITE_WIDTH;
-        char_jump_anim_clips[0].h = PLAYER_SPRITE_HEIGHT + 18;
-    }
-    // load character fall texture
-    if (!char_sprite_sheet_fall.loadFromFile(char_fall_path, renderer)) {
-        std::cout << "Failed to load char_sprite_sheet_fall!" << std::endl;
-        success = false;
-    }
-        // create char sprite clips
-    else {
-        char_fall_anim_clips[0].x = (6 * 64) + 12;
-        char_fall_anim_clips[0].y = 40;
-        char_fall_anim_clips[0].w = PLAYER_SPRITE_WIDTH;
-        char_fall_anim_clips[0].h = PLAYER_SPRITE_HEIGHT + 18;
-    }
-    // load character idle texture
-    if(!char_sprite_sheet_idle.loadFromFile(char_idle_path, renderer)) {
-        std::cout << "Failed to load char_sprite_sheet_idle!" << std::endl;
-        success = false;
-    }
 
     return success;
 }
@@ -171,7 +116,6 @@ void close() {
     // Free texture resources
     bg_texture.free();
     platform_texture.free();
-    char_sprite_sheet_run.free();
 
     //Destroy window/renderer
     SDL_DestroyRenderer(renderer);
@@ -202,9 +146,8 @@ int main( int argc, char* args[] ) {
     Camera camera(camera_rect, LEVEL_WIDTH, LEVEL_HEIGHT);
 
     // Main loop vars
+    Player player(renderer);
     SDL_Event e;
-    Player player;
-    int frame = 0;
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
 
@@ -259,6 +202,7 @@ int main( int argc, char* args[] ) {
     /**
      * The above block building and platform generation can be done in a Level class
      * You would basically take your level seed and build the level from that each time you load a level
+     * the level seed could correspond with a config file that has the level structure data
      */
 
 
@@ -280,69 +224,44 @@ int main( int argc, char* args[] ) {
             }
         }
 
-        // process player actions after calculating time since last frame
+        // process player actions/movement
         player.move(delta_time, colliders);
 
-        // Clear Screen
+        // Clear Screen for rendering new frame
         SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
         SDL_RenderClear(renderer);
 
         /**
-         * Background rendering
+         * The block below is all of the Level component rendering
+         * This can be done in a Level class
          */
-        // Loop to tile the bg image across the screen
         for(int x = 0; x < LEVEL_WIDTH; x += tile_width) {
+            // Loop to tile the bg image across the screen
             for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
                 bg_dest_rect.x = x - camera.camera_rect.x * PARALLAX_FACTOR;
                 bg_dest_rect.y = y - camera.camera_rect.y * PARALLAX_FACTOR;
                 SDL_RenderCopy(renderer, bg_texture.getTexture(), &bg_src_rect, &bg_dest_rect);
             }
         }
-        /**
-         * Player rendering
-         * once animation building happens inside player's animator, the following if/else block can be replaced with
-         * player.render(camera)
-         * or maybe even player.render() if the player's animator has a reference to the camera
-         * TODO: make player.render() work
-         * this will require player.render() to know the state of the player and the frame of the animation
-         */
-        int anim_frame = frame / 4;
-        if (player.state == "running") {
-            player.render(camera, char_sprite_sheet_run, renderer, &char_run_anim_clips[anim_frame]);
-        }
-        else if (player.state == "jumping") {
-            player.render(camera, char_sprite_sheet_jump, renderer, &char_jump_anim_clips[0]);
-        }
-        else if (player.state == "falling") {
-            player.render(camera, char_sprite_sheet_fall, renderer, &char_fall_anim_clips[0]);
-        }
-        else {
-            player.render(camera, char_sprite_sheet_idle, renderer, &char_run_anim_clips[0]);
-        }
-        ++frame;
-        if (frame / 4 >= RUNNING_ANIMATION_FRAMES) {
-            frame = 0;
-        }
-
-        /**
-         * Platform rendering
-         */
         for (auto &platform : platforms) {
+            // Loop to iterate through all platforms and render them
             SDL_Rect render_rect = platform;
             render_rect.x -= camera.camera_rect.x;
             render_rect.y -= camera.camera_rect.y;
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
             platform_texture.render(render_rect.x, render_rect.y, renderer, &platform_sprite_clips[platform_type], 0, 0.55);
         }
-
-        /**
-         * Ground rendering
-         */
         SDL_Rect render_rect = ground;
         render_rect.x -= camera.camera_rect.x;
         render_rect.y -= camera.camera_rect.y;
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderFillRect(renderer, &render_rect);
+
+
+        /**
+         * Player rendering
+         */
+        player.render(camera);
 
         /**
          * Update screen with rendering
