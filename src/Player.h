@@ -11,7 +11,7 @@
 class Player {
 public:
     std::string state;
-    explicit Player(SDL_Renderer* renderer);
+    explicit Player(SDL_Renderer* renderer, std::string animatorType);
     void handle_event(SDL_Event& e);
     void move(float delta_time, std::vector<SDL_Rect>& collision_objects);
     void render(Camera& camera);

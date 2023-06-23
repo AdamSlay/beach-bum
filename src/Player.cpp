@@ -1,4 +1,5 @@
 #include <iostream>
+#include <utility>
 
 #include "Player.h"
 #include "utils.h"
@@ -15,7 +16,7 @@ const std::tuple SPAWN_LOCATION = {500, 300};
 
 int JUMP_COUNT = 0;
 
-Player::Player(SDL_Renderer* renderer) :
+Player::Player(SDL_Renderer* renderer, std::string animatorType) :
         width(32),
         height(48),
         velocity(400.0f),
@@ -26,7 +27,7 @@ Player::Player(SDL_Renderer* renderer) :
         vel_x(0.0f),
         vel_y(0.0f),
         player_collider(),
-        animator(renderer),
+        animator(renderer, std::move(animatorType)),
         state("idle"),
         jumping(false),
         grounded(false) {

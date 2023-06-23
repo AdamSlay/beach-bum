@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 # Find the SDL2 package
 find_package(SDL2 REQUIRED COMPONENTS SDL2)
 find_package(SDL2_image REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 # Set the source files for your project
 set(SOURCE_FILES
@@ -19,4 +20,5 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PRIVATE
         SDL2::SDL2
         SDL2_image::SDL2_image
+        nlohmann_json::nlohmann_json
         )

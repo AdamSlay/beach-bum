@@ -146,7 +146,7 @@ int main( int argc, char* args[] ) {
     Camera camera(camera_rect, LEVEL_WIDTH, LEVEL_HEIGHT);
 
     // Main loop vars
-    Player player(renderer);
+    Player player(renderer, "Player");
     SDL_Event e;
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
@@ -240,7 +240,7 @@ int main( int argc, char* args[] ) {
             for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
                 bg_dest_rect.x = x - camera.camera_rect.x * PARALLAX_FACTOR;
                 bg_dest_rect.y = y - camera.camera_rect.y * PARALLAX_FACTOR;
-                SDL_RenderCopy(renderer, bg_texture.getTexture(), &bg_src_rect, &bg_dest_rect);
+                SDL_RenderCopy(renderer, bg_texture.getTexture().get(), &bg_src_rect, &bg_dest_rect);
             }
         }
         for (auto &platform : platforms) {
