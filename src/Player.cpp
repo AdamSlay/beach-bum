@@ -7,7 +7,7 @@
 const int SCREEN_HEIGHT = 800;
 const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 5;
-const int GRAVITY = 1900;
+const float GRAVITY = 1900.0f;
 const float PLAYER_SCALE = 1.2f;
 const int LEFT = 1;
 const int RIGHT = 0;
@@ -25,13 +25,13 @@ Player::Player() :
         direction(0),
         vel_x(0.0f),
         vel_y(0.0f),
-        collider(),
+        player_collider(),
         animator(),
         state("idle"),
         jumping(false),
         grounded(false) {
-    collider.w  = (width * PLAYER_SCALE) - 10;  // 5 pixel buffer on each side
-    collider.h = (height * PLAYER_SCALE) - 10;
+    player_collider.w  = (width * PLAYER_SCALE) - 10;  // 5 pixel buffer on each side
+    player_collider.h = (height * PLAYER_SCALE) - 10;
 }
 
 void Player::handle_event(SDL_Event& e) {
@@ -84,7 +84,7 @@ void Player::handle_event(SDL_Event& e) {
     }
 }
 
-void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
+void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
     // apply gravity
     vel_y += GRAVITY * delta_time;
 
@@ -95,44 +95,44 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
 
     // if you're at the peak of your jump, lighten gravity a bit
     if (vel_y > 0 && vel_y < 150 && !grounded) {
-        vel_y += (GRAVITY * 0.1) * delta_time;
+        vel_y += (GRAVITY * 0.1f) * delta_time;
         vel_x *= 1.1;
     }
     else if (vel_y > 200 && !grounded) {
-        vel_y += (GRAVITY * 1.1) * delta_time;
+        vel_y += (GRAVITY * 1.1f) * delta_time;
     }
 
     // move player along x-axis then check for collision
     pos_x += vel_x * delta_time;
-    collider.x = pos_x + COLLIDER_EDGE_BUFFER;
-    for (SDL_Rect object: objects) {
-        if (check_collision(collider, object)) {
+    player_collider.x = pos_x + COLLIDER_EDGE_BUFFER;
+    for (SDL_Rect object: collision_objects) {
+        if (check_collision(player_collider, object)) {
             jumping = false;
             // player is moving right and collided with object
             if (vel_x > 0) {
-                collider.x = object.x - collider.w;
-                pos_x = collider.x - COLLIDER_EDGE_BUFFER;
+                player_collider.x = object.x - player_collider.w;
+                pos_x = player_collider.x - COLLIDER_EDGE_BUFFER;
             }
             // player is moving left and collided with object
             else if (vel_x < 0) {
-                collider.x = object.x + object.w;
-                pos_x = collider.x - COLLIDER_EDGE_BUFFER;
+                player_collider.x = object.x + object.w;
+                pos_x = player_collider.x - COLLIDER_EDGE_BUFFER;
             }
         }
     }
 
     // move player along y-axis then check for collision
     pos_y += vel_y * delta_time;
-    collider.y = pos_y + COLLIDER_EDGE_BUFFER;
+    player_collider.y = pos_y + COLLIDER_EDGE_BUFFER;
     grounded = false;
-    for (SDL_Rect object: objects) {
+    for (SDL_Rect object: collision_objects) {
 
-        if (check_collision_yax(collider, object)) {
+        if (check_collision_yax(player_collider, object)) {
 
             // player is falling and collided with object
             if (vel_y >= 0) {
-                collider.y = object.y - collider.h;
-                pos_y = collider.y - COLLIDER_EDGE_BUFFER;
+                player_collider.y = object.y - player_collider.h;
+                pos_y = player_collider.y - COLLIDER_EDGE_BUFFER;
                 jumping = false;
                 grounded = true;
                 vel_y = 0;
@@ -140,8 +140,8 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& objects) {
             }
             // player is jumping and collided with object
             else if (vel_y < 0) {
-                collider.y = object.y + object.h;
-                pos_y = collider.y - COLLIDER_EDGE_BUFFER;
+                player_collider.y = object.y + object.h;
+                pos_y = player_collider.y - COLLIDER_EDGE_BUFFER;
                 jumping = false;
                 vel_y = 0;
             }
@@ -186,9 +186,12 @@ void Player::jump() {
    grounded = false;
 }
 
-void Player::render(int camera_x, int camera_y, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip = nullptr) const {
-    int render_x = pos_x - camera_x;
-    int render_y = pos_y - camera_y;
+void Player::render(Camera& camera, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip = nullptr) const {
+    SDL_Rect player_rect = {pos_x, pos_y, width, height};
+    camera.center_on_object(player_rect);
+
+    int render_x = pos_x - camera.camera_rect.x;
+    int render_y = pos_y - camera.camera_rect.y;
     texture.render(render_x, render_y, renderer, clip, direction, PLAYER_SCALE);
 }
 

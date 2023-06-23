@@ -293,40 +293,35 @@ int main( int argc, char* args[] ) {
         // Loop to tile the bg image across the screen
         for(int x = 0; x < LEVEL_WIDTH; x += tile_width) {
             for(int y = 0; y < LEVEL_HEIGHT; y += tile_height) {
-                bg_dest_rect.x = x - camera.rect.x * PARALLAX_FACTOR;
-                bg_dest_rect.y = y - camera.rect.y * PARALLAX_FACTOR;
+                bg_dest_rect.x = x - camera.camera_rect.x * PARALLAX_FACTOR;
+                bg_dest_rect.y = y - camera.camera_rect.y * PARALLAX_FACTOR;
                 SDL_RenderCopy(renderer, bg_texture.getTexture(), &bg_src_rect, &bg_dest_rect);
             }
         }
         /**
          * Player rendering
-         */
-        camera.center_on_player(player);
-        SDL_Rect dest_rect;
-        int anim_frame = frame / 4;
-        int SCALE_FACTOR = 10;
-        dest_rect.w = PLAYER_SPRITE_WIDTH * SCALE_FACTOR;   // scale_factor > 1 for enlargement
-        dest_rect.h = PLAYER_SPRITE_HEIGHT * SCALE_FACTOR;
-
-        // Center the scaled sprite at the player's position
-        dest_rect.x = player.get_x() - dest_rect.w / 2;
-        dest_rect.y = player.get_y() - dest_rect.h / 2;
-        /**
          * once animation building happens inside player's animator, the following if/else block can be replaced with
          * player.render(camera)
          * or maybe even player.render() if the player's animator has a reference to the camera
+         * TODO: make player.render() work
+         * this will require player.render() to know the state of the player and the frame of the animation
          */
+        int anim_frame = frame / 4;
         if (player.state == "running") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_run, renderer, &char_run_anim_clips[anim_frame]);
+            player.render(camera, char_sprite_sheet_run, renderer, &char_run_anim_clips[anim_frame]);
         }
         else if (player.state == "jumping") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_jump, renderer, &char_jump_anim_clips[0]);
+            player.render(camera, char_sprite_sheet_jump, renderer, &char_jump_anim_clips[0]);
         }
         else if (player.state == "falling") {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_fall, renderer, &char_fall_anim_clips[0]);
+            player.render(camera, char_sprite_sheet_fall, renderer, &char_fall_anim_clips[0]);
         }
         else {
-            player.render(camera.rect.x, camera.rect.y, char_sprite_sheet_idle, renderer, &char_run_anim_clips[0]);
+            player.render(camera, char_sprite_sheet_idle, renderer, &char_run_anim_clips[0]);
+        }
+        ++frame;
+        if (frame / 4 >= RUNNING_ANIMATION_FRAMES) {
+            frame = 0;
         }
 
         /**
@@ -334,8 +329,8 @@ int main( int argc, char* args[] ) {
          */
         for (auto &platform : platforms) {
             SDL_Rect render_rect = platform;
-            render_rect.x -= camera.rect.x;
-            render_rect.y -= camera.rect.y;
+            render_rect.x -= camera.camera_rect.x;
+            render_rect.y -= camera.camera_rect.y;
             SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
             platform_texture.render(render_rect.x, render_rect.y, renderer, &platform_sprite_clips[platform_type], 0, 0.55);
         }
@@ -344,27 +339,24 @@ int main( int argc, char* args[] ) {
          * Ground rendering
          */
         SDL_Rect render_rect = ground;
-        render_rect.x -= camera.rect.x;
-        render_rect.y -= camera.rect.y;
+        render_rect.x -= camera.camera_rect.x;
+        render_rect.y -= camera.camera_rect.y;
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderFillRect(renderer, &render_rect);
 
-        // Update Screen
+        /**
+         * Update screen with rendering
+         */
         SDL_RenderPresent(renderer);
 
-        // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
+        /**
+         * Frame timing
+         * Determine time it took to process this frame and delay if necessary to maintain constant frame rate
+         */
         frame_end = SDL_GetTicks64();
         auto frame_time = frame_end - frame_start; // time it took to process this frame
         if (frame_time < FRAME_DURATION) {
             SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
-        }
-
-        /**
-         * frame count should be kept inside individual animator objects.
-         */
-        ++frame;
-        if (frame / 4 >= RUNNING_ANIMATION_FRAMES) {
-            frame = 0;
         }
     }
 

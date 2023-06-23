@@ -4,16 +4,17 @@
 
 #include <SDL2/SDL.h>
 
-#include "Texture.h"
 #include "Animator.h"
+#include "Camera.h"
+#include "Texture.h"
 
 class Player {
 public:
     std::string state;
     Player();
     void handle_event(SDL_Event& e);
-    void move(float delta_time, std::vector<SDL_Rect>& objects);
-    void render(int camera_x, int camera_y, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip) const;
+    void move(float delta_time, std::vector<SDL_Rect>& collision_objects);
+    void render(Camera& camera, Texture& texture, SDL_Renderer* renderer, SDL_Rect* clip) const;
     void jump();
     int get_x() const;
     int get_y() const;
@@ -26,6 +27,6 @@ private:
     bool jumping, grounded;
     int pos_x, pos_y, direction;
     float vel_x, vel_y;
-    SDL_Rect collider;
+    SDL_Rect player_collider;
     Animator animator;
 };
