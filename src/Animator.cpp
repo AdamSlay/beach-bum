@@ -80,10 +80,7 @@ Animator::~Animator() {
 }
 
 void Animator::animate(std::tuple<int, int> location, std::string state, int direction, float scale) {
-    int render_x = std::get<0>(location);
-    int render_y = std::get<1>(location);
-
-    int anim_frame = frame / 4;
+    int anim_frame = frame / 4;  // 4 realtime frames per animation frame otherwise it's too fast
     if (previous_state != state) {
         previous_state = state;
         frame = 0;
@@ -95,17 +92,16 @@ void Animator::animate(std::tuple<int, int> location, std::string state, int dir
         frame = 0;
     }
 
-
     if (state == "running") {
-        char_sprite_sheet_run.render(render_x, render_y, renderer, &char_run_anim_clips[anim_frame], direction, scale);
+        char_sprite_sheet_run.render(location, renderer, &char_run_anim_clips[anim_frame], direction, scale);
     }
     else if (state == "jumping") {
-        char_sprite_sheet_jump.render(render_x, render_y, renderer, &char_jump_anim_clips[0], direction, scale);
+        char_sprite_sheet_jump.render(location, renderer, &char_jump_anim_clips[0], direction, scale);
     }
     else if (state == "falling") {
-        char_sprite_sheet_fall.render(render_x, render_y, renderer, &char_fall_anim_clips[0], direction, scale);
+        char_sprite_sheet_fall.render(location, renderer, &char_fall_anim_clips[0], direction, scale);
     }
     else {
-        char_sprite_sheet_idle.render(render_x, render_y, renderer, &char_run_anim_clips[0], direction, scale);
+        char_sprite_sheet_idle.render(location, renderer, &char_run_anim_clips[0], direction, scale);
     }
 }

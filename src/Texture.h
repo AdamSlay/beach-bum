@@ -12,7 +12,7 @@ public:
     ~Texture();
     bool loadFromFile(const std::string& path, SDL_Renderer* renderer);
     void free();
-    void render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect* clip, int direction, float scale);
+    void render(std::tuple<int, int> location, SDL_Renderer* renderer, SDL_Rect* clip, int direction, float scale);
     int getWidth() const;
     int getHeight() const;
     SDL_Texture* getTexture() const;

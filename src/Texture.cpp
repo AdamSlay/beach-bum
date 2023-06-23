@@ -56,8 +56,10 @@ void Texture::free() {
     }
 }
 
-void Texture::render(int pos_x, int pos_y, SDL_Renderer* renderer, SDL_Rect* clip = nullptr, int direction = 0, float scale = 1) {
+void Texture::render(std::tuple<int, int> location, SDL_Renderer* renderer, SDL_Rect* clip = nullptr, int direction = 0, float scale = 1) {
     // render the texture
+    int pos_x = std::get<0>(location);
+    int pos_y = std::get<1>(location);
     SDL_Rect renderQuad {pos_x, pos_y, width, height};
 
     if (clip != nullptr) {

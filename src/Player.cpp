@@ -195,7 +195,6 @@ void Player::render(Camera& camera) {
     std::tuple<int, int> render_location = {render_x, render_y};
 
     animator.animate(render_location, state, direction, PLAYER_SCALE);
-//    texture.render(render_x, render_y, renderer, clip, direction, PLAYER_SCALE);
 }
 
 int Player::get_x() const {

@@ -228,7 +228,7 @@ int main( int argc, char* args[] ) {
         player.move(delta_time, colliders);
 
         // Clear Screen for rendering new frame
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
 
         /**
@@ -248,13 +248,13 @@ int main( int argc, char* args[] ) {
             SDL_Rect render_rect = platform;
             render_rect.x -= camera.camera_rect.x;
             render_rect.y -= camera.camera_rect.y;
-            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-            platform_texture.render(render_rect.x, render_rect.y, renderer, &platform_sprite_clips[platform_type], 0, 0.55);
+
+            std::tuple<int, int> render_location = {render_rect.x, render_rect.y};
+            platform_texture.render(render_location, renderer, &platform_sprite_clips[platform_type], 0, 0.55);
         }
         SDL_Rect render_rect = ground;
         render_rect.x -= camera.camera_rect.x;
         render_rect.y -= camera.camera_rect.y;
-        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderFillRect(renderer, &render_rect);
 
 
