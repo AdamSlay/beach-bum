@@ -24,6 +24,7 @@ class Animator {
 public:
     SDL_Renderer* renderer;
     std::string previous_state;
+    std::vector<std::string> possible_states;
     std::map<std::string, Animation> animations;
     int frame;
     Animator(SDL_Renderer* renderer, std::string animatorType);

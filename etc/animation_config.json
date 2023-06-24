@@ -1,5 +1,11 @@
 {
     "Player": {
+        "PossibleStates": [
+            "idle",
+            "running",
+            "jumping",
+            "falling"
+        ],
         "Animations": {
             "running": {
                 "file_path": "../assets/bb_run_sheet.png",

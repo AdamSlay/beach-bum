@@ -7,7 +7,7 @@
 
 #include "Animator.h"
 
-Animator::Animator(SDL_Renderer* _renderer, std::string type): renderer(_renderer), frame(-1), previous_state("none"), animations(){
+Animator::Animator(SDL_Renderer* _renderer, std::string type):renderer(_renderer), frame(-1), previous_state("none"), animations(), possible_states() {
 
     // parse json animation file
     std::ifstream configFileStream("../etc/animation_config.json");
@@ -16,8 +16,15 @@ Animator::Animator(SDL_Renderer* _renderer, std::string type): renderer(_rendere
 
     // For each character
     for (auto& [animatorType, animator] : animationConfig.items()) {
+
         // For each animation of the character
         if (animatorType == type) {
+
+            // set the possible_states
+            for (auto& state : animator["PossibleStates"]) {
+                possible_states.push_back(state);
+            }
+
             for (auto& [animationName, animationValue] : animator["Animations"].items()) {
                 std::string name = animationName;
                 std::string file_path = animationValue["file_path"];
@@ -77,7 +84,6 @@ void Animator::animate(std::tuple<int, int> location, std::string state, int dir
     int anim_frame = frame / 4;  // 4 realtime frames per animation frame otherwise it's too fast
     bool state_found = false;
 
-    std::vector<std::string> possible_states = {"running", "jumping", "falling", "idle"};
     for (std::string& possible_state : possible_states) {
         if (state == possible_state) {
             state_found = true;
