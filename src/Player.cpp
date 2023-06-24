@@ -14,6 +14,11 @@ const int LEFT = 1;
 const int RIGHT = 0;
 const std::tuple SPAWN_LOCATION = {500, 300};
 
+const int SUSPEND_ASCEND_MAX = -150;  // First step of jumping animation (maxed out jumping)
+const int SUSPEND_DESCEND_MAX = 150;  // falling faster, maxed out falling
+const int SUSPEND_APEX_MIN = -75;  // apex of jump
+const int SUSPEND_APEX_MAX = 75;
+
 int JUMP_COUNT = 0;
 
 Player::Player(SDL_Renderer* renderer, std::string animatorType) :
@@ -170,10 +175,20 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
         state = "running";
     }
     else if (!grounded) {
-        if (vel_y > 0)
-            state = "falling";
-        else {
-            state = "jumping";
+        if (vel_y >= SUSPEND_APEX_MIN && vel_y <= SUSPEND_APEX_MAX) {
+            state = "suspendApex";
+        }
+        else if (vel_y > SUSPEND_DESCEND_MAX) {  // Suspend DESCEND Max is 200
+            state = "falling";  // full speed falling
+        }
+        else if (vel_y < SUSPEND_ASCEND_MAX) {  // Suspend ASCEND Max is -200
+            state = "jumping";  // full speed jumping
+        }
+        else if (vel_y > 0) {
+            state = "suspendDescend";  // slow falling
+        }
+        else if (vel_y < 0) {
+            state = "suspendAscend";  // slow jumping
         }
     }
     else {

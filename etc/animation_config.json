@@ -4,7 +4,10 @@
             "idle",
             "running",
             "jumping",
-            "falling"
+            "falling",
+            "suspendApex",
+            "suspendDescend",
+            "suspendAscend"
         ],
         "Animations": {
             "running": {
@@ -38,6 +41,30 @@
                 "frame_height": 48,
                 "start_position_x":  0,
                 "start_position_y":  52
+            },
+            "suspendApex": {
+                "file_path": "../assets/bb_jump_sheet.png",
+                "frame_count": 1,
+                "frame_width": 64,
+                "frame_height": 60,
+                "start_position_x": 256,
+                "start_position_y": 42
+            },
+            "suspendAscend": {
+                "file_path": "../assets/bb_jump_sheet.png",
+                "frame_count": 1,
+                "frame_width": 64,
+                "frame_height": 60,
+                "start_position_x": 192,
+                "start_position_y": 42
+            },
+            "suspendDescend": {
+                "file_path": "../assets/bb_jump_sheet.png",
+                "frame_count": 1,
+                "frame_width": 64,
+                "frame_height": 60,
+                "start_position_x": 320,
+                "start_position_y": 42
             }
         }
     }
