@@ -29,4 +29,9 @@ private:
     float vel_x, vel_y;
     SDL_Rect player_collider;
     Animator animator;
+
+    void apply_gravity(float delta_time);
+    void move_player_along_axis(float delta_time, std::vector<SDL_Rect> collision_objects);
+    void set_state();
+    void keep_player_on_screen();
 };
