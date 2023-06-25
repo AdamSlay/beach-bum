@@ -5,8 +5,8 @@
 #include "utils.h"
 
 
-const int X_AXIS = 0;
-const int Y_AXIS = 1;
+const int X_COLLIDER_OFFSET = 12;
+const int Y_COLLIDER_OFFSET = 62;
 const int SCREEN_HEIGHT = 800;
 const int SCREEN_WIDTH = 1000;
 const int COLLIDER_EDGE_BUFFER = 6;
@@ -154,25 +154,25 @@ void Player::apply_gravity(float delta_time) {
 void Player::move_player_along_axis(float delta_time, std::vector<SDL_Rect> collision_objects) {
     // move player along x-axis then check for collision
     pos_x += vel_x * delta_time;
-    player_collider.x = pos_x + COLLIDER_EDGE_BUFFER;
+    player_collider.x = pos_x + COLLIDER_EDGE_BUFFER + X_COLLIDER_OFFSET;
     for (SDL_Rect object: collision_objects) {
         if (check_collision(player_collider, object)) {
             jumping = false;
             // player is moving right and collided with object
             if (vel_x > 0) {
                 player_collider.x = object.x - player_collider.w;
-                pos_x = player_collider.x - COLLIDER_EDGE_BUFFER;
+                pos_x = player_collider.x - COLLIDER_EDGE_BUFFER - X_COLLIDER_OFFSET;
             }
                 // player is moving left and collided with object
             else if (vel_x < 0) {
                 player_collider.x = object.x + object.w;
-                pos_x = player_collider.x - COLLIDER_EDGE_BUFFER;
+                pos_x = player_collider.x - COLLIDER_EDGE_BUFFER - X_COLLIDER_OFFSET;
             }
         }
     }
     // move player along y-axis then check for collision
     pos_y += vel_y * delta_time;
-    player_collider.y = pos_y + COLLIDER_EDGE_BUFFER;
+    player_collider.y = pos_y + COLLIDER_EDGE_BUFFER + Y_COLLIDER_OFFSET;
     grounded = false;
     for (SDL_Rect object: collision_objects) {
 
@@ -181,7 +181,7 @@ void Player::move_player_along_axis(float delta_time, std::vector<SDL_Rect> coll
             // player is falling and collided with object
             if (vel_y >= 0) {
                 player_collider.y = object.y - player_collider.h;
-                pos_y = player_collider.y - COLLIDER_EDGE_BUFFER;
+                pos_y = player_collider.y - COLLIDER_EDGE_BUFFER - Y_COLLIDER_OFFSET;
                 jumping = false;
                 grounded = true;
                 vel_y = 0;
@@ -190,7 +190,7 @@ void Player::move_player_along_axis(float delta_time, std::vector<SDL_Rect> coll
                 // player is jumping and collided with object
             else if (vel_y < 0) {
                 player_collider.y = object.y + object.h;
-                pos_y = player_collider.y - COLLIDER_EDGE_BUFFER;
+                pos_y = player_collider.y - COLLIDER_EDGE_BUFFER - Y_COLLIDER_OFFSET;
                 jumping = false;
                 vel_y = 0;
             }

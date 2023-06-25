@@ -14,57 +14,57 @@
                 "file_path": "../assets/bb_run_sheet.png",
                 "frame_count": 8,
                 "frame_width": 64,
-                "frame_height": 48,
+                "frame_height": 100,
                 "start_position_x":  0,
-                "start_position_y":  52
+                "start_position_y":  0
             },
             "jumping": {
                 "file_path": "../assets/bb_jump_sheet.png",
                 "frame_count": 1,
                 "frame_width": 64,
-                "frame_height": 60,
+                "frame_height": 100,
                 "start_position_x":  128,
-                "start_position_y":  42
+                "start_position_y":  0
             },
             "falling": {
                 "file_path": "../assets/bb_jump_sheet.png",
                 "frame_count": 1,
                 "frame_width": 64,
-                "frame_height": 60,
+                "frame_height": 100,
                 "start_position_x":  384,
-                "start_position_y":  42
+                "start_position_y":  0
             },
             "idle": {
                 "file_path": "../assets/bb.png",
                 "frame_count": 1,
                 "frame_width": 64,
-                "frame_height": 48,
+                "frame_height": 100,
                 "start_position_x":  0,
-                "start_position_y":  52
+                "start_position_y":  0
             },
             "suspendApex": {
                 "file_path": "../assets/bb_jump_sheet.png",
                 "frame_count": 1,
                 "frame_width": 64,
-                "frame_height": 60,
+                "frame_height": 100,
                 "start_position_x": 256,
-                "start_position_y": 42
+                "start_position_y": 0
             },
             "suspendAscend": {
                 "file_path": "../assets/bb_jump_sheet.png",
                 "frame_count": 1,
                 "frame_width": 64,
-                "frame_height": 60,
+                "frame_height": 100,
                 "start_position_x": 192,
-                "start_position_y": 42
+                "start_position_y": 0
             },
             "suspendDescend": {
                 "file_path": "../assets/bb_jump_sheet.png",
                 "frame_count": 1,
                 "frame_width": 64,
-                "frame_height": 60,
+                "frame_height": 100,
                 "start_position_x": 320,
-                "start_position_y": 42
+                "start_position_y": 0
             }
         }
     }
