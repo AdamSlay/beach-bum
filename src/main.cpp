@@ -123,14 +123,12 @@ int main( int argc, char* args[] ) {
         colliders = level.get_colliders();
         player.move(delta_time, colliders);
 
-        /**
-         * The block below is all of the Level component rendering
-         */
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
-        // TODO: level.render(camera);
+
         level.render(camera);
         player.render(camera);
+
         SDL_RenderPresent(renderer);
 
         /**

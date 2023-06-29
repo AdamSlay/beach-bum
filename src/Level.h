@@ -20,11 +20,6 @@ class Level {
     void render_ground(Camera& camera, SDL_Rect& ground);
     void render_platforms(Camera& camera, std::vector<SDL_Rect>& platforms);
     SDL_Texture* generateBackground();
-
-
-
-
-
 };
 
 

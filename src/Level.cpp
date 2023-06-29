@@ -8,8 +8,8 @@
 #include "Texture.h"
 
 const float PARALLAX_FACTOR = 0.9f;
-const int LEVEL_WIDTH = 1280;
-const int LEVEL_HEIGHT = 920;
+const int LEVEL_WIDTH = 1000;
+const int LEVEL_HEIGHT = 800;
 const int PLATFORM_WIDTH = 128;
 const int PLATFORM_HEIGHT = 32;
 const int X_MIN = 50;
