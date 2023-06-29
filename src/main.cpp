@@ -143,12 +143,10 @@ SDL_Texture* generateBackground(SDL_Renderer* bgrenderer) {
 }
 
 bool loadMedia() {
-    // Asset file paths
-    std::string platform_path = "../assets/test_platforms.png";
-
     background = generateBackground(renderer);
 
     // load platform texture
+    std::string platform_path = "../assets/test_platforms.png";
     bool success = true;
     if (!platform_texture.loadFromFile(platform_path, renderer)) {
         std::cout << "Failed to load platform_texture!" << std::endl;
@@ -305,6 +303,7 @@ int main( int argc, char* args[] ) {
          */
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
+        // TODO: level.render(camera);
         render_background(camera, background);
         render_ground(camera, ground);
         render_platforms(camera, platforms);
