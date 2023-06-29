@@ -35,7 +35,6 @@ int platform_type;
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
-Texture bg_texture;
 Texture platform_texture;
 SDL_Texture* background;
 SDL_Rect bg_dest_rect;
@@ -86,10 +85,8 @@ bool init() {
 
 SDL_Texture* generateBackground(SDL_Renderer* bgrenderer) {
     // BG tile
-    int dest_level_width = LEVEL_WIDTH;
-    int dest_level_height = LEVEL_HEIGHT;
-    bg_dest_rect.w = dest_level_width;
-    bg_dest_rect.h = dest_level_height;
+    bg_dest_rect.w = LEVEL_WIDTH;
+    bg_dest_rect.h = LEVEL_HEIGHT;
     bg_dest_rect.x = 0;
     bg_dest_rect.y = 0;
 
@@ -171,7 +168,6 @@ bool loadMedia() {
 
 void close() {
     // Free texture resources
-    bg_texture.free();
     platform_texture.free();
 
     //Destroy window/renderer
@@ -185,7 +181,7 @@ void close() {
     SDL_Quit();
 }
 
-void render_background(SDL_Rect bg_dest_rect, Camera& camera, SDL_Texture* bg) {
+void render_background(Camera& camera, SDL_Texture* bg) {
     for(int x = 0; x < LEVEL_WIDTH; x += LEVEL_WIDTH) {
         // Loop to tile the bg image across the screen
         for(int y = 0; y < LEVEL_HEIGHT; y += LEVEL_HEIGHT) {
@@ -196,7 +192,7 @@ void render_background(SDL_Rect bg_dest_rect, Camera& camera, SDL_Texture* bg) {
     }
 }
 
-void render_platforms(std::vector<SDL_Rect>& platforms, Camera& camera) {
+void render_platforms(Camera& camera, std::vector<SDL_Rect>& platforms) {
     for (auto &platform : platforms) {
         // Loop to iterate through all platforms and render them
         SDL_Rect render_rect = platform;
@@ -309,9 +305,9 @@ int main( int argc, char* args[] ) {
          */
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
-        render_background(bg_dest_rect, camera, background);
-        render_platforms(platforms, camera);
+        render_background(camera, background);
         render_ground(camera, ground);
+        render_platforms(camera, platforms);
         player.render(camera);
         SDL_RenderPresent(renderer);
 
