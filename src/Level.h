@@ -9,12 +9,13 @@
 
 class Level {
     public:
-    Level(SDL_Renderer* _renderer);
-    void render(Camera* camera);
+    Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders);
+    void render(Camera camera);
+    std::vector<SDL_Rect> get_colliders();
 
     private:
     SDL_Renderer* renderer;
-    std::vector<SDL_Rect> collision_objects;
+    std::vector<SDL_Rect> colliders;
     void render_background(Camera& camera);
     void render_ground(Camera& camera, SDL_Rect& ground);
     void render_platforms(Camera& camera, std::vector<SDL_Rect>& platforms);

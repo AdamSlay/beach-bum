@@ -7,15 +7,15 @@
 #include "Level.h"
 #include "Texture.h"
 
-const float PARALLAX_FACTOR = 0.5f;
+const float PARALLAX_FACTOR = 0.9f;
 const int LEVEL_WIDTH = 1280;
-const int LEVEL_HEIGHT = 720;
+const int LEVEL_HEIGHT = 920;
 const int PLATFORM_WIDTH = 128;
 const int PLATFORM_HEIGHT = 32;
 const int X_MIN = 50;
 const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
 const int Y_MIN = 200;
-const int Y_MAX = 280; // ensure platform doesn't exceed level bounds
+const int Y_MAX = 250; // ensure platform doesn't exceed level bounds
 const int PLATFORM_COUNT = 3; // number of platforms to generate
 int platform_type;
 
@@ -24,7 +24,7 @@ Texture platform_texture;
 SDL_Rect platform_sprite_clips[4];
 SDL_Texture *background;
 
-Level::Level(SDL_Renderer* _renderer) : renderer(_renderer) {
+Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : renderer(_renderer), colliders(_colliders) {
     // Initialize background
     bg_dest_rect.w = LEVEL_WIDTH;
     bg_dest_rect.h = LEVEL_HEIGHT;
@@ -56,7 +56,7 @@ Level::Level(SDL_Renderer* _renderer) : renderer(_renderer) {
     ground.y = 350;
     ground.w = 800;
     ground.h = 500;
-    std::vector<SDL_Rect> colliders {ground};
+    colliders.push_back(ground);
     std::vector<SDL_Rect> platforms {};
 
     // Use a random number generator
@@ -83,10 +83,10 @@ Level::Level(SDL_Renderer* _renderer) : renderer(_renderer) {
     }
 }
 
-void Level::render(Camera *camera) {
-    render_background(*camera);
-    render_ground(*camera, collision_objects[0]);
-    render_platforms(*camera, collision_objects);
+void Level::render(Camera camera) {
+    render_background(camera);
+    render_ground(camera, colliders[0]);
+    render_platforms(camera, colliders);
 }
 
 void Level::render_background(Camera &camera) {
@@ -179,3 +179,6 @@ SDL_Texture* Level::generateBackground() {
     return levelTexture;
 }
 
+std::vector<SDL_Rect> Level::get_colliders() {
+    return colliders;
+}
