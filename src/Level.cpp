@@ -16,7 +16,7 @@ const int X_MIN = 50;
 const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
 const int Y_MIN = 200;
 const int Y_MAX = 250; // ensure platform doesn't exceed level bounds
-const int PLATFORM_COUNT = 3; // number of platforms to generate
+const int PLATFORM_COUNT = 24; // number of platforms to generate
 int platform_type;
 
 SDL_Rect bg_dest_rect;
@@ -64,7 +64,7 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
     std::uniform_int_distribution<int> distributionX(X_MIN, 100);
     std::uniform_int_distribution<int> distributionY(Y_MIN, Y_MAX);
     std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
-    platform_type = distributionPlatform(generator);
+    platform_type = distributionPlatform(generator) % 4;
 
     auto& last_platform = starting_block;
     for (int i = 0; i < PLATFORM_COUNT; i++) {
