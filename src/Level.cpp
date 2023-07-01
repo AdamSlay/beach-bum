@@ -24,7 +24,7 @@ Texture platform_texture;
 SDL_Rect platform_sprite_clips[4];
 SDL_Texture *background;
 
-Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : renderer(_renderer), colliders(_colliders) {
+Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : renderer(_renderer), colliders(_colliders), platforms() {
     // Initialize background
     bg_dest_rect.w = LEVEL_WIDTH;
     bg_dest_rect.h = LEVEL_HEIGHT;
@@ -57,7 +57,6 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
     ground.w = 8000;
     ground.h = 500;
     colliders.push_back(ground);
-    std::vector<SDL_Rect> platforms {};
 
     // Use a random number generator
     std::default_random_engine generator(std::time(nullptr));
@@ -91,7 +90,7 @@ Level::~Level() {
 void Level::render(Camera camera) {
     render_background(camera);
     render_ground(camera, colliders[0]);
-    render_platforms(camera, colliders);
+    render_platforms(camera, platforms);
 }
 
 void Level::render_background(Camera &camera) {

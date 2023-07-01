@@ -17,6 +17,7 @@ class Level {
     private:
     SDL_Renderer* renderer;
     std::vector<SDL_Rect> colliders;
+    std::vector<SDL_Rect> platforms;
     void render_background(Camera& camera);
     void render_ground(Camera& camera, SDL_Rect& ground);
     void render_platforms(Camera& camera, std::vector<SDL_Rect>& platforms);
