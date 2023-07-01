@@ -8,7 +8,7 @@
 #include "Texture.h"
 
 const float PARALLAX_FACTOR = 0.9f;
-const int LEVEL_WIDTH = 1000;
+const int LEVEL_WIDTH = 5000;
 const int LEVEL_HEIGHT = 800;
 const int PLATFORM_WIDTH = 128;
 const int PLATFORM_HEIGHT = 32;
@@ -54,7 +54,7 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
     SDL_Rect ground;
     ground.x = 100;
     ground.y = 350;
-    ground.w = 800;
+    ground.w = 8000;
     ground.h = 500;
     colliders.push_back(ground);
     std::vector<SDL_Rect> platforms {};
