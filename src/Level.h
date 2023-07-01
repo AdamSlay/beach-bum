@@ -10,6 +10,7 @@
 class Level {
     public:
     Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders);
+    ~Level();
     void render(Camera camera);
     std::vector<SDL_Rect> get_colliders();
 

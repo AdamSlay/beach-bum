@@ -83,6 +83,11 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
     }
 }
 
+Level::~Level() {
+    SDL_DestroyTexture(background);
+    background = nullptr;
+}
+
 void Level::render(Camera camera) {
     render_background(camera);
     render_ground(camera, colliders[0]);
