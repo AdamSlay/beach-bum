@@ -131,10 +131,8 @@ int main( int argc, char* args[] ) {
 
         SDL_RenderPresent(renderer);
 
-        /**
-         * Frame timing
-         * Determine time it took to process this frame and delay if necessary to maintain constant frame rate
-         */
+         // Frame timing
+         // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
         frame_end = SDL_GetTicks64();
         auto frame_time = frame_end - frame_start; // time it took to process this frame
         if (frame_time < FRAME_DURATION) {

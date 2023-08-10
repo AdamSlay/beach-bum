@@ -5,6 +5,8 @@
 #include "utils.h"
 
 
+const int SPAWN_X = 500;
+const int SPAWN_Y = 300;
 const int X_COLLIDER_OFFSET = 12;
 const int Y_COLLIDER_OFFSET = 62;
 const int LEVEL_HEIGHT = 800;
@@ -28,8 +30,8 @@ Player::Player(SDL_Renderer* renderer, std::string animatorType) :
         height(48),
         velocity(400.0f),
         initial_jump_velocity(650.0f),
-        pos_x(500),
-        pos_y(300),
+        pos_x(SPAWN_X),
+        pos_y(SPAWN_Y),
         direction(0),
         vel_x(0.0f),
         vel_y(0.0f),
@@ -151,7 +153,7 @@ void Player::apply_gravity(float delta_time) {
     }
 }
 
-void Player::move_player_along_axis(float delta_time, std::vector<SDL_Rect> collision_objects) {
+void Player::move_player_along_axis(float delta_time, std::vector<SDL_Rect>& collision_objects) {
     // move player along x-axis then check for collision
     pos_x += vel_x * delta_time;
     player_collider.x = pos_x + COLLIDER_EDGE_BUFFER + X_COLLIDER_OFFSET;

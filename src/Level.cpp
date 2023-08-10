@@ -77,7 +77,11 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
 
         // Add to colliders
         colliders.push_back(new_platform);
+
+        // Add to platforms
         platforms.push_back(new_platform);
+
+        // last_platform is now this current platform
         last_platform = new_platform;
     }
 }
@@ -178,7 +182,7 @@ SDL_Texture* Level::generateBackground() {
     }
 
     // Reset the renderer target
-    SDL_SetRenderTarget(renderer, NULL);
+    SDL_SetRenderTarget(renderer, nullptr);
 
     return levelTexture;
 }
