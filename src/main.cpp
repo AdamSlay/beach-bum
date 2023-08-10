@@ -1,6 +1,4 @@
-#include <ctime>
 #include <iostream>
-#include <random>
 #include <vector>
 
 #include <SDL2/SDL.h>
