@@ -7,7 +7,8 @@ and jump. If the player falls off the lime green ground, they will respawn at th
 
 It is a work in progress and is not yet ready for use.
 
-However, here is a gif of the current progress: ![Beach Bum Example Gif](assets/bb_example.gif)
+However, here is a gif of the current progress: 
+![Beach Bum Example Gif](assets/bb_example.gif)
 
 Here, you can see a different background and set of platforms is generated on this run:
 ![Beach Bum Example Gif 2](assets/bb_example_2.gif)
