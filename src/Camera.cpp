@@ -20,7 +20,6 @@ float Camera::calculate_smoothing(int edge_distance, float min_smoothing, float 
     return max_smoothing;
 }
 
-// TODO: make this center_on_object and pass in a GameObject or SDL_Rect or something
 void Camera::center_on_object(const SDL_Rect& object_rect) {
     int desired_x = (object_rect.x + object_rect.w / 2) - camera_rect.w / 2;
     int desired_y = (object_rect.y + object_rect.h / 2) - camera_rect.h * 5 / 7;

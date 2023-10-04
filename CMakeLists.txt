@@ -11,7 +11,13 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 # Set the source files for your project
 set(SOURCE_FILES
         src/main.cpp
-        src/Texture.cpp src/Texture.h src/Player.cpp src/Player.h src/utils.cpp src/utils.h src/Camera.cpp src/Camera.h src/Animator.cpp src/Animator.h src/Level.cpp src/Level.h)
+        src/Texture.cpp src/Texture.h
+        src/Player.cpp src/Player.h
+        src/utils.cpp src/utils.h
+        src/Camera.cpp src/Camera.h
+        src/Animator.cpp src/Animator.h
+        src/Level.cpp src/Level.h
+        )
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
