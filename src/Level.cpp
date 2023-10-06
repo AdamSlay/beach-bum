@@ -9,6 +9,11 @@
 const float PARALLAX_FACTOR = 0.9f;
 const int PLATFORM_WIDTH = 128;
 const int PLATFORM_HEIGHT = 32;
+const int GROUND_HEIGHT = 200;
+const int GROUND_WIDTH_MIN = PLATFORM_WIDTH * 2;
+const int GROUND_WIDTH_MAX = PLATFORM_WIDTH * 6;
+const int GAP_WIDTH_MIN = PLATFORM_WIDTH;
+const int GAP_WIDTH_MAX = PLATFORM_WIDTH * 3;
 const int X_MIN = 50;
 const int Y_MIN = 200;
 const int Y_MAX = 250; // ensure platform doesn't exceed level bounds
@@ -29,6 +34,10 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     plat_distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
     bg_distributionX = std::uniform_int_distribution(0, 3);
     bg_distributionY = std::uniform_int_distribution(0, 3);
+    ground_distribution = std::uniform_int_distribution<int>(GROUND_WIDTH_MIN, GROUND_WIDTH_MAX);
+    gap_distribution = std::uniform_int_distribution<int>(GAP_WIDTH_MIN, GAP_WIDTH_MAX);
+
+    // TODO: remove this and pick random platform type for each platform in the generate_platform function
     std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
     platform_type = distributionPlatform(generator) % 4;
 
@@ -55,20 +64,37 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     last_platform.y = 400;
     last_platform.w = 100;
     last_platform.h = 100;
-    SDL_Rect ground;
-    ground.x = 100;
-    ground.y = 350;
-    ground.w = 8000;
-    ground.h = 500;
-    colliders.push_back(ground);
+    last_ground.x = 0;
+    last_ground.y = 350;
+    last_ground.w = 0;
+    last_ground.h = 500;
 
-    // Generate the first platform
+    // Generate the first platform and ground
+    generate_ground();
     generate_platform();
 }
 
 Level::~Level() {
     SDL_DestroyTexture(background);
     background = nullptr;
+}
+
+void Level::generate_ground() {
+    SDL_Rect new_ground;
+    int potential_new_x = last_ground.x + last_ground.w + gap_distribution(generator);
+    new_ground.x = potential_new_x;
+    new_ground.y = 350;
+    new_ground.w = ground_distribution(generator);
+    new_ground.h = GROUND_HEIGHT;
+
+    // Add to grounds
+    grounds.push_back(new_ground);
+
+    // Add to colliders
+    colliders.push_back(new_ground);
+
+    // last_ground is now this current ground
+    last_ground = new_ground;
 }
 
 void Level::generate_platform() {
@@ -125,18 +151,21 @@ void Level::generateBackgroundColumn() {
 
 void Level::render(Camera camera) {
     render_background(camera);
-    render_ground(camera, colliders[0]);
-    render_platforms(camera, platforms);
+    render_ground(camera);
+    render_platforms(camera);
 }
 
-void Level::render_ground(Camera &camera, SDL_Rect& ground) {
-    SDL_Rect render_rect = ground;
-    render_rect.x -= camera.camera_rect.x;
-    render_rect.y -= camera.camera_rect.y;
-    SDL_RenderFillRect(renderer, &render_rect);
+void Level::render_ground(Camera &camera) {
+    for (auto &ground : grounds) {
+        SDL_Rect render_rect = ground;
+        render_rect.x -= camera.camera_rect.x;
+        render_rect.y -= camera.camera_rect.y;
+        SDL_RenderFillRect(renderer, &render_rect);
+    }
 }
 
-void Level::render_platforms(Camera &camera, std::vector<SDL_Rect> &platforms) {
+
+void Level::render_platforms(Camera &camera) {
     for (auto &platform : platforms) {
         // Loop to iterate through all platforms and render them
         SDL_Rect render_rect = platform;
@@ -163,4 +192,8 @@ std::vector<SDL_Rect> Level::get_colliders() {
 
 SDL_Rect Level::get_last_platform() {
     return last_platform;
+}
+
+SDL_Rect Level::get_last_ground() {
+    return last_ground;
 }

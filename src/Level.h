@@ -17,28 +17,34 @@ class Level {
     int nextColumnX;
     Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders);
     ~Level();
+    void generate_ground();
     void generate_platform();
     void generateBackgroundColumn();
     void render(Camera camera);
     std::vector<SDL_Rect> get_colliders();
     SDL_Rect get_last_platform();
+    SDL_Rect get_last_ground();
 
     private:
     SDL_Renderer* renderer;
     std::vector<SDL_Rect> colliders;
     std::vector<SDL_Rect> platforms;
+    std::vector<SDL_Rect> grounds;
+    SDL_Rect last_ground;
     SDL_Rect last_platform;
     std::default_random_engine generator;
     std::uniform_int_distribution<int> plat_distributionX;
     std::uniform_int_distribution<int> plat_distributionY;
     std::uniform_int_distribution<int> bg_distributionX;
     std::uniform_int_distribution<int> bg_distributionY;
+    std::uniform_int_distribution<int> ground_distribution;
+    std::uniform_int_distribution<int> gap_distribution;
     SDL_Texture* bgSpriteSheet;
     std::vector<SDL_Texture*> backgroundColumns;
 
     void render_background(Camera& camera);
-    void render_ground(Camera& camera, SDL_Rect& ground);
-    void render_platforms(Camera& camera, std::vector<SDL_Rect>& platforms);
+    void render_ground(Camera &camera);
+    void render_platforms(Camera& camera);
     SDL_Texture* generateTileableBackground();
 };
 

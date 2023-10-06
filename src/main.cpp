@@ -120,6 +120,11 @@ int main( int argc, char* args[] ) {
         colliders = level.get_colliders();
         player.move(delta_time, colliders);
 
+        // check if it's time to generate a new ground
+        if (player.get_x() > level.get_last_ground().x) {
+            std::cout << "Player x: " << player.get_x() << ", Last ground x: " << level.get_last_ground().x << std::endl;
+            level.generate_ground();
+        }
         // Check if it's time to generate a new background column
         if (camera.camera_rect.x >= level.nextColumnX) {
             level.generateBackgroundColumn();
