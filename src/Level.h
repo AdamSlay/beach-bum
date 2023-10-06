@@ -23,8 +23,10 @@ class Level {
     std::vector<SDL_Rect> platforms;
     SDL_Rect last_platform;
     std::default_random_engine generator;
-    std::uniform_int_distribution<int> distributionX;
-    std::uniform_int_distribution<int> distributionY;
+    std::uniform_int_distribution<int> plat_distributionX;
+    std::uniform_int_distribution<int> plat_distributionY;
+    std::uniform_int_distribution<int> bg_distributionX;
+    std::uniform_int_distribution<int> bg_distributionY;
     void render_background(Camera& camera);
     void render_ground(Camera& camera, SDL_Rect& ground);
     void render_platforms(Camera& camera, std::vector<SDL_Rect>& platforms);

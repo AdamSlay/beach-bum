@@ -23,6 +23,16 @@ SDL_Texture *background;
 
 Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
         : renderer(_renderer), colliders(_colliders), platforms() {
+
+    // Initialize random number generator
+    generator = std::default_random_engine(std::time(nullptr));
+    plat_distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
+    plat_distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
+    bg_distributionX = std::uniform_int_distribution(0, 3);
+    bg_distributionY = std::uniform_int_distribution(0, 3);
+    std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
+    platform_type = distributionPlatform(generator) % 4;
+
     // Initialize background
     bg_dest_rect.w = 5000;
     bg_dest_rect.h = LEVEL_HEIGHT;
@@ -56,13 +66,6 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     ground.h = 500;
     colliders.push_back(ground);
 
-    // Initialize random number generator
-    generator = std::default_random_engine(std::time(nullptr));
-    distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
-    distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
-    std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
-    platform_type = distributionPlatform(generator) % 4;
-
     // Generate the first platform
     generate_platform();
 }
@@ -74,9 +77,9 @@ Level::~Level() {
 
 void Level::generate_platform() {
     SDL_Rect new_platform;
-    int potential_new_x = last_platform.x + last_platform.w + distributionX(generator);
+    int potential_new_x = last_platform.x + last_platform.w + plat_distributionX(generator);
     new_platform.x = potential_new_x;
-    new_platform.y = distributionY(generator);
+    new_platform.y = plat_distributionY(generator);
     new_platform.w = PLATFORM_WIDTH;
     new_platform.h = PLATFORM_HEIGHT;
 
@@ -152,15 +155,6 @@ SDL_Texture* Level::generateBackground() {
     // Set the renderer target to the new texture
     SDL_SetRenderTarget(renderer, levelTexture);
 
-    // Get the number of tiles in the sprite sheet
-    int tilesX = 256 / tileWidth;
-    int tilesY = 256 / tileHeight;
-
-    // Use a random number generator
-    std::default_random_engine generator(std::time(nullptr));
-    std::uniform_int_distribution<int> distributionX(0, tilesX - 1);
-    std::uniform_int_distribution<int> distributionY(0, tilesY - 1);
-
     SDL_Rect srcRect = {0, 0, tileWidth, tileHeight};
     SDL_Rect destRect = {0, 0, tileWidth, tileHeight};
 
@@ -168,8 +162,8 @@ SDL_Texture* Level::generateBackground() {
     for(int x = 0; x < 5000; x += tileWidth) {
         for(int y = 0; y < LEVEL_HEIGHT; y += tileHeight) {
             // Randomly select a tile from the sprite sheet
-            srcRect.x = distributionX(generator) * tileWidth;
-            srcRect.y = distributionY(generator) * tileHeight;
+            srcRect.x = bg_distributionX(generator) * tileWidth;
+            srcRect.y = bg_distributionY(generator) * tileHeight;
 
             // Copy the tile to the level texture
             destRect.x = x;
