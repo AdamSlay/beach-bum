@@ -7,7 +7,6 @@
 #include "Texture.h"
 
 const float PARALLAX_FACTOR = 0.9f;
-const int LEVEL_HEIGHT = 800;
 const int PLATFORM_WIDTH = 128;
 const int PLATFORM_HEIGHT = 32;
 const int X_MIN = 50;
@@ -24,7 +23,7 @@ SDL_Texture *background;
 Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
         : renderer(_renderer), colliders(_colliders), platforms() {
 
-    // Initialize random number generator
+    // Initialize random number generators
     generator = std::default_random_engine(std::time(nullptr));
     plat_distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
     plat_distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
@@ -33,12 +32,9 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
     platform_type = distributionPlatform(generator) % 4;
 
-    // Initialize background
-    bg_dest_rect.w = 5000;
-    bg_dest_rect.h = LEVEL_HEIGHT;
-    bg_dest_rect.x = 0;
-    bg_dest_rect.y = 0;
-    background = generateBackground();
+    nextColumnX = 0 - SCREEN_WIDTH;
+    bgSpriteSheet = IMG_LoadTexture(renderer, "../assets/bb_90s_pattern_dark.png");
+    background = generateTileableBackground();
 
     // Initialize platforms
     std::string platform_path = "../assets/test_platforms.png";
@@ -93,21 +89,44 @@ void Level::generate_platform() {
     last_platform = new_platform;
 }
 
+SDL_Texture* Level::generateTileableBackground() {
+    // Create a new texture to hold the level background
+    SDL_Texture* levelTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+    return levelTexture;
+}
+
+void Level::generateBackgroundColumn() {
+    // Create a new column texture
+    SDL_Texture* columnTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TILE_WIDTH, SCREEN_HEIGHT);
+
+    // Set the renderer target to the new texture
+    SDL_SetRenderTarget(renderer, columnTexture);
+
+    SDL_Rect srcRect = {0, 0, TILE_WIDTH, TILE_HEIGHT};
+    SDL_Rect destRect = {0, 0, TILE_WIDTH, TILE_HEIGHT};
+
+    // For each tile space in the column
+    for(int y = 0; y < SCREEN_HEIGHT; y += TILE_HEIGHT) {
+        // Randomly select a tile from the sprite sheet
+        srcRect.y = bg_distributionY(generator) * TILE_HEIGHT;
+        srcRect.x = bg_distributionX(generator) * TILE_WIDTH;
+
+        // Copy the tile to the column texture
+        destRect.y = y;
+        SDL_RenderCopy(renderer, bgSpriteSheet, &srcRect, &destRect);
+    }
+
+    // Reset the renderer target
+    SDL_SetRenderTarget(renderer, nullptr);
+
+    // Append the column texture to the right side of the background texture
+    backgroundColumns.push_back(columnTexture);
+}
+
 void Level::render(Camera camera) {
     render_background(camera);
     render_ground(camera, colliders[0]);
     render_platforms(camera, platforms);
-}
-
-void Level::render_background(Camera &camera) {
-    for(int x = 0; x < 5000; x += 5000) {
-        // Loop to tile the bg image across the screen
-        for(int y = 0; y < LEVEL_HEIGHT; y += LEVEL_HEIGHT) {
-            bg_dest_rect.x = x - camera.camera_rect.x * PARALLAX_FACTOR;
-            bg_dest_rect.y = y - camera.camera_rect.y * PARALLAX_FACTOR;
-            SDL_RenderCopy(renderer, background, nullptr, &bg_dest_rect);
-        }
-    }
 }
 
 void Level::render_ground(Camera &camera, SDL_Rect& ground) {
@@ -129,55 +148,13 @@ void Level::render_platforms(Camera &camera, std::vector<SDL_Rect> &platforms) {
     }
 }
 
-SDL_Texture* Level::generateBackground() {
-
-    // BG tile
-    bg_dest_rect.w = 5000;
-    bg_dest_rect.h = LEVEL_HEIGHT;
-    bg_dest_rect.x = 0;
-    bg_dest_rect.y = 0;
-
-    SDL_Texture* bgSpriteSheet = nullptr;
-    std::string spriteSheetPath = "../assets/bb_90s_pattern_dark.png"; // Path to your sprite sheet
-    bgSpriteSheet = IMG_LoadTexture(renderer, spriteSheetPath.c_str());
-
-    if (bgSpriteSheet == nullptr) {
-        std::cout << "Failed to load sprite sheet texture image!" << std::endl;
-        std::cout << "SDL_image Error: " << IMG_GetError() << std::endl;
+void Level::render_background(Camera &camera) {
+    int x = 0;
+    for(auto& columnTexture : backgroundColumns) {
+        SDL_Rect destRect = {static_cast<int>(x - camera.camera_rect.x * PARALLAX_FACTOR), 0, TILE_WIDTH, SCREEN_HEIGHT};
+        SDL_RenderCopy(renderer, columnTexture, nullptr, &destRect);
+        x += TILE_WIDTH;
     }
-
-    const int tileWidth = 64;
-    const int tileHeight = 64;
-
-    // Create a new texture to hold the level background
-    SDL_Texture* levelTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 5000, LEVEL_HEIGHT);
-
-    // Set the renderer target to the new texture
-    SDL_SetRenderTarget(renderer, levelTexture);
-
-    SDL_Rect srcRect = {0, 0, tileWidth, tileHeight};
-    SDL_Rect destRect = {0, 0, tileWidth, tileHeight};
-
-    // For each tile space in the level
-    for(int x = 0; x < 5000; x += tileWidth) {
-        for(int y = 0; y < LEVEL_HEIGHT; y += tileHeight) {
-            // Randomly select a tile from the sprite sheet
-            srcRect.x = bg_distributionX(generator) * tileWidth;
-            srcRect.y = bg_distributionY(generator) * tileHeight;
-
-            // Copy the tile to the level texture
-            destRect.x = x;
-            destRect.y = y;
-            destRect.w = tileWidth;
-            destRect.h = tileHeight;
-            SDL_RenderCopy(renderer, bgSpriteSheet, &srcRect, &destRect);
-        }
-    }
-
-    // Reset the renderer target
-    SDL_SetRenderTarget(renderer, nullptr);
-
-    return levelTexture;
 }
 
 std::vector<SDL_Rect> Level::get_colliders() {

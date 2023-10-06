@@ -120,6 +120,12 @@ int main( int argc, char* args[] ) {
         colliders = level.get_colliders();
         player.move(delta_time, colliders);
 
+        // Check if it's time to generate a new background column
+        if (camera.camera_rect.x >= level.nextColumnX) {
+            level.generateBackgroundColumn();
+            level.nextColumnX += level.TILE_WIDTH;
+        }
+
         if (player.get_x() > level.get_last_platform().x) {
             level.generate_platform();
         }
