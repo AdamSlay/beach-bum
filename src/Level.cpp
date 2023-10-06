@@ -8,12 +8,10 @@
 #include "Texture.h"
 
 const float PARALLAX_FACTOR = 0.9f;
-const int LEVEL_WIDTH = 5000;
 const int LEVEL_HEIGHT = 800;
 const int PLATFORM_WIDTH = 128;
 const int PLATFORM_HEIGHT = 32;
 const int X_MIN = 50;
-const int X_MAX = LEVEL_WIDTH - PLATFORM_WIDTH; // ensure platform doesn't exceed level bounds
 const int Y_MIN = 200;
 const int Y_MAX = 250; // ensure platform doesn't exceed level bounds
 const int PLATFORM_COUNT = 24; // number of platforms to generate
@@ -26,7 +24,7 @@ SDL_Texture *background;
 
 Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : renderer(_renderer), colliders(_colliders), platforms() {
     // Initialize background
-    bg_dest_rect.w = LEVEL_WIDTH;
+    bg_dest_rect.w = 5000;
     bg_dest_rect.h = LEVEL_HEIGHT;
     bg_dest_rect.x = 0;
     bg_dest_rect.y = 0;
@@ -69,7 +67,7 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
     for (int i = 0; i < PLATFORM_COUNT; i++) {
         SDL_Rect new_platform;
         int potential_new_x = last_platform.x + last_platform.w + distributionX(generator);
-        new_platform.x = std::min(X_MAX, potential_new_x);
+        new_platform.x = potential_new_x;
         new_platform.y = distributionY(generator);
         new_platform.w = PLATFORM_WIDTH;
         new_platform.h = PLATFORM_HEIGHT;
@@ -98,7 +96,7 @@ void Level::render(Camera camera) {
 }
 
 void Level::render_background(Camera &camera) {
-    for(int x = 0; x < LEVEL_WIDTH; x += LEVEL_WIDTH) {
+    for(int x = 0; x < 5000; x += 5000) {
         // Loop to tile the bg image across the screen
         for(int y = 0; y < LEVEL_HEIGHT; y += LEVEL_HEIGHT) {
             bg_dest_rect.x = x - camera.camera_rect.x * PARALLAX_FACTOR;
@@ -130,7 +128,7 @@ void Level::render_platforms(Camera &camera, std::vector<SDL_Rect> &platforms) {
 SDL_Texture* Level::generateBackground() {
 
     // BG tile
-    bg_dest_rect.w = LEVEL_WIDTH;
+    bg_dest_rect.w = 5000;
     bg_dest_rect.h = LEVEL_HEIGHT;
     bg_dest_rect.x = 0;
     bg_dest_rect.y = 0;
@@ -148,7 +146,7 @@ SDL_Texture* Level::generateBackground() {
     const int tileHeight = 64;
 
     // Create a new texture to hold the level background
-    SDL_Texture* levelTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LEVEL_WIDTH, LEVEL_HEIGHT);
+    SDL_Texture* levelTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 5000, LEVEL_HEIGHT);
 
     // Set the renderer target to the new texture
     SDL_SetRenderTarget(renderer, levelTexture);
@@ -166,7 +164,7 @@ SDL_Texture* Level::generateBackground() {
     SDL_Rect destRect = {0, 0, tileWidth, tileHeight};
 
     // For each tile space in the level
-    for(int x = 0; x < LEVEL_WIDTH; x += tileWidth) {
+    for(int x = 0; x < 5000; x += tileWidth) {
         for(int y = 0; y < LEVEL_HEIGHT; y += tileHeight) {
             // Randomly select a tile from the sprite sheet
             srcRect.x = distributionX(generator) * tileWidth;

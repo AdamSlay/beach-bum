@@ -14,7 +14,6 @@ const int ORIGIN_X = 0;
 const int ORIGIN_Y = 0;
 const int SCREEN_WIDTH = 770;
 const int SCREEN_HEIGHT = 420;
-const int LEVEL_WIDTH = 5000;
 const int LEVEL_HEIGHT = 800;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
@@ -95,7 +94,7 @@ int main( int argc, char* args[] ) {
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
     SDL_Rect camera_rect = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
-    Camera camera(camera_rect, LEVEL_WIDTH, LEVEL_HEIGHT);
+    Camera camera(camera_rect, LEVEL_HEIGHT);
     Player player(renderer, "Player");
     Level level(renderer, colliders);
 

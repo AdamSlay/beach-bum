@@ -10,7 +10,6 @@ const int SPAWN_Y = 300;
 const int X_COLLIDER_OFFSET = 12;
 const int Y_COLLIDER_OFFSET = 62;
 const int LEVEL_HEIGHT = 800;
-const int LEVEL_WIDTH = 5000;
 const int COLLIDER_EDGE_BUFFER = 6;
 const float GRAVITY = 1900.0f;
 const float PLAYER_SCALE = 1.2f;
@@ -233,9 +232,9 @@ void Player::keep_player_on_screen() {
     if (pos_x < 0) {
         pos_x = 0;
     }
-    else if (pos_x + width > LEVEL_WIDTH) {
-        pos_x = LEVEL_WIDTH - width;
-    }
+//    else if (pos_x + width > LEVEL_WIDTH) {
+//        pos_x = LEVEL_WIDTH - width;
+//    }
     if (pos_y < 0) {
         pos_y = 0;
     }
