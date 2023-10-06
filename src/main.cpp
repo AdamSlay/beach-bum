@@ -120,6 +120,10 @@ int main( int argc, char* args[] ) {
         colliders = level.get_colliders();
         player.move(delta_time, colliders);
 
+        if (player.get_x() > level.get_last_platform().x) {
+            level.generate_platform();
+        }
+
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
 

@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-#include <random>
 
 #include <SDL2/SDL_image.h>
 
@@ -22,7 +21,8 @@ Texture platform_texture;
 SDL_Rect platform_sprite_clips[4];
 SDL_Texture *background;
 
-Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : renderer(_renderer), colliders(_colliders), platforms() {
+Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
+        : renderer(_renderer), colliders(_colliders), platforms() {
     // Initialize background
     bg_dest_rect.w = 5000;
     bg_dest_rect.h = LEVEL_HEIGHT;
@@ -44,11 +44,11 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
             platform_sprite_clips[i].h = 64;
         }
     }
-    SDL_Rect starting_block;
-    starting_block.x = 100;
-    starting_block.y = 400;
-    starting_block.w = 100;
-    starting_block.h = 100;
+
+    last_platform.x = 100;
+    last_platform.y = 400;
+    last_platform.w = 100;
+    last_platform.h = 100;
     SDL_Rect ground;
     ground.x = 100;
     ground.y = 350;
@@ -56,37 +56,38 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders) : rende
     ground.h = 500;
     colliders.push_back(ground);
 
-    // Use a random number generator
-    std::default_random_engine generator(std::time(nullptr));
-    std::uniform_int_distribution<int> distributionX(X_MIN, 100);
-    std::uniform_int_distribution<int> distributionY(Y_MIN, Y_MAX);
+    // Initialize random number generator
+    generator = std::default_random_engine(std::time(nullptr));
+    distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
+    distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
     std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
     platform_type = distributionPlatform(generator) % 4;
 
-    auto& last_platform = starting_block;
-    for (int i = 0; i < PLATFORM_COUNT; i++) {
-        SDL_Rect new_platform;
-        int potential_new_x = last_platform.x + last_platform.w + distributionX(generator);
-        new_platform.x = potential_new_x;
-        new_platform.y = distributionY(generator);
-        new_platform.w = PLATFORM_WIDTH;
-        new_platform.h = PLATFORM_HEIGHT;
-        std::cout << "New platform: " << new_platform.x << ", " << new_platform.y << std::endl;
-
-        // Add to colliders
-        colliders.push_back(new_platform);
-
-        // Add to platforms
-        platforms.push_back(new_platform);
-
-        // last_platform is now this current platform
-        last_platform = new_platform;
-    }
+    // Generate the first platform
+    generate_platform();
 }
 
 Level::~Level() {
     SDL_DestroyTexture(background);
     background = nullptr;
+}
+
+void Level::generate_platform() {
+    SDL_Rect new_platform;
+    int potential_new_x = last_platform.x + last_platform.w + distributionX(generator);
+    new_platform.x = potential_new_x;
+    new_platform.y = distributionY(generator);
+    new_platform.w = PLATFORM_WIDTH;
+    new_platform.h = PLATFORM_HEIGHT;
+
+    // Add to colliders
+    colliders.push_back(new_platform);
+
+    // Add to platforms
+    platforms.push_back(new_platform);
+
+    // last_platform is now this current platform
+    last_platform = new_platform;
 }
 
 void Level::render(Camera camera) {
@@ -187,4 +188,8 @@ SDL_Texture* Level::generateBackground() {
 
 std::vector<SDL_Rect> Level::get_colliders() {
     return colliders;
+}
+
+SDL_Rect Level::get_last_platform() {
+    return last_platform;
 }
