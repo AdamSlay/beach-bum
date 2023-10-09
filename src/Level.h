@@ -3,18 +3,13 @@
 #include <vector>
 
 #include "Camera.h"
+#include "Texture.h"
 
 #ifndef SDL_PRACTICE_LEVEL_H
 #define SDL_PRACTICE_LEVEL_H
 
-
 class Level {
-    public:
-    int TILE_WIDTH{64};
-    int TILE_HEIGHT{64};
-    int SCREEN_WIDTH{770};
-    int SCREEN_HEIGHT{420};
-    int nextColumnX;
+public:
     Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders);
     ~Level();
     void generate_ground();
@@ -24,8 +19,33 @@ class Level {
     std::vector<SDL_Rect> get_colliders();
     SDL_Rect get_last_platform();
     SDL_Rect get_last_ground();
+    int get_next_column_x();
+    void increment_next_column_x();
 
-    private:
+private:
+    int TILE_WIDTH;
+    int TILE_HEIGHT;
+    int SCREEN_WIDTH;
+    int SCREEN_HEIGHT;
+    float PARALLAX_FACTOR;
+    int PLATFORM_WIDTH;
+    int PLATFORM_HEIGHT;
+    float PLATFORM_SCALE_FACTOR;
+    int GROUND_HEIGHT;
+    int GROUND_WIDTH_MIN;
+    int GROUND_WIDTH_MAX;
+    int GAP_WIDTH_MIN;
+    int GAP_WIDTH_MAX;
+    int X_MIN;
+    int Y_MIN;
+    int Y_MAX;
+    int PLATFORM_COUNT;
+    int PLATFORM_TYPES;
+    int platform_type;
+    int nextColumnX;
+    Texture platform_texture;
+    SDL_Rect platform_sprite_clips[4];
+    SDL_Texture *background;
     SDL_Renderer* renderer;
     std::vector<SDL_Rect> colliders;
     std::vector<SDL_Rect> platforms;
@@ -47,6 +67,5 @@ class Level {
     void render_platforms(Camera& camera);
     SDL_Texture* generateTileableBackground();
 };
-
 
 #endif //SDL_PRACTICE_LEVEL_H

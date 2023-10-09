@@ -126,9 +126,9 @@ int main( int argc, char* args[] ) {
             level.generate_ground();
         }
         // Check if it's time to generate a new background column
-        if (camera.camera_rect.x >= level.nextColumnX) {
+        if (camera.camera_rect.x >= level.get_next_column_x()) {
             level.generateBackgroundColumn();
-            level.nextColumnX += level.TILE_WIDTH;
+            level.increment_next_column_x();
         }
 
         if (player.get_x() > level.get_last_platform().x) {
