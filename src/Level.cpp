@@ -83,13 +83,8 @@ void Level::generate_ground() {
     new_ground.w = ground_distribution(generator);
     new_ground.h = GROUND_HEIGHT;
 
-    // Add to grounds
     grounds.push_back(new_ground);
-
-    // Add to colliders
     colliders.push_back(new_ground);
-
-    // last_ground is now this current ground
     last_ground = new_ground;
 }
 
@@ -98,16 +93,11 @@ void Level::generate_platform() {
     int potential_new_x = last_platform.x + last_platform.w + plat_distributionX(generator);
     new_platform.x = potential_new_x;
     new_platform.y = plat_distributionY(generator);
-    new_platform.w = PLATFORM_WIDTH * PLATFORM_SCALE_FACTOR;
-    new_platform.h = PLATFORM_HEIGHT * PLATFORM_SCALE_FACTOR;
+    new_platform.w = PLATFORM_WIDTH * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
+    new_platform.h = PLATFORM_HEIGHT * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
 
-    // Add to colliders
     colliders.push_back(new_platform);
-
-    // Add to platforms
     platforms.push_back(new_platform);
-
-    // last_platform is now this current platform
     last_platform = new_platform;
 }
 
