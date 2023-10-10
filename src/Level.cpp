@@ -86,8 +86,8 @@ void Level::generate_ground() {
 
 void Level::generate_platform() {
     Platform new_platform;
-    int potential_new_x = last_platform.x + last_platform.w + plat_distributionX(generator);
-    new_platform.rect.x = potential_new_x;
+    int new_plat_x = last_platform.x + last_platform.w + plat_distributionX(generator);
+    new_platform.rect.x = new_plat_x;
     new_platform.rect.y = plat_distributionY(generator);
     new_platform.rect.w = PLATFORM_WIDTH * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
     new_platform.rect.h = PLATFORM_HEIGHT * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
