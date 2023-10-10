@@ -25,10 +25,12 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     GROUND_WIDTH_MAX = config["GROUND_WIDTH_MAX"];
     GAP_WIDTH_MIN = config["GAP_WIDTH_MIN"];
     GAP_WIDTH_MAX = config["GAP_WIDTH_MAX"];
-    X_MIN = config["X_MIN"];
-    Y_MIN = config["Y_MIN"];
-    Y_MAX = config["Y_MAX"];
+    PLAT_DIST_X_MIN = config["PLAT_DIST_X_MIN"];
+    PLAT_DIST_X_MAX = config["PLAT_DIST_X_MAX"];
+    PLAT_DIST_Y_MIN = config["PLAT_DIST_Y_MIN"];
+    PLAT_DIST_Y_MAX = config["PLAT_DIST_Y_MAX"];
     PLATFORM_TYPES = config["PLATFORM_TYPES"];
+    GROUND_LEVEL_Y = config["GROUND_LEVEL_Y"];
     PLATFORM_SCALE_FACTOR = config["PLATFORM_SCALE_FACTOR"];
     BACKGROUND_SPRITE_SHEET_PATH = config["BACKGROUND_SPRITE_PATH"];
     PLATFORM_SPRITE_SHEET_PATH = config["PLATFORM_SPRITE_PATH"];
@@ -36,8 +38,8 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     // Initialize random number generators
     std::random_device rd;
     generator = std::default_random_engine(rd());
-    plat_distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
-    plat_distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
+    plat_distributionX = std::uniform_int_distribution<int>(PLAT_DIST_X_MIN, PLAT_DIST_X_MAX);
+    plat_distributionY = std::uniform_int_distribution<int>(PLAT_DIST_Y_MIN, PLAT_DIST_Y_MAX);
     plat_type_distribution = std::uniform_int_distribution<int>(0, PLATFORM_TYPES-1);
     bg_distributionX = std::uniform_int_distribution(0, 3);
     bg_distributionY = std::uniform_int_distribution(0, 3);
@@ -62,7 +64,7 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
         }
     }
     last_platform = {100, 400, 100, 100};  // the pre-first platform
-    last_ground = {0, 350, 0, 500};  // the pre-first ground
+    last_ground = {0, GROUND_LEVEL_Y, 0, 500};  // the pre-first ground
 
     // Generate the first platform and ground
     generate_ground();
@@ -78,7 +80,7 @@ void Level::generate_ground() {
     SDL_Rect new_ground;
     int potential_new_x = last_ground.x + last_ground.w + gap_distribution(generator);
     new_ground.x = potential_new_x;
-    new_ground.y = 350;
+    new_ground.y = GROUND_LEVEL_Y;
     new_ground.w = ground_distributionX(generator);
     new_ground.h = GROUND_HEIGHT;
 

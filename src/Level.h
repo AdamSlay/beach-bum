@@ -41,10 +41,12 @@ private:
     int GROUND_WIDTH_MAX;
     int GAP_WIDTH_MIN;
     int GAP_WIDTH_MAX;
-    int X_MIN;
-    int Y_MIN;
-    int Y_MAX;
+    int PLAT_DIST_X_MIN;
+    int PLAT_DIST_X_MAX;
+    int PLAT_DIST_Y_MIN;
+    int PLAT_DIST_Y_MAX;
     int PLATFORM_TYPES;
+    int GROUND_LEVEL_Y;
     std::string BACKGROUND_SPRITE_SHEET_PATH;
     std::string PLATFORM_SPRITE_SHEET_PATH;
     int nextColumnX;

@@ -11,7 +11,7 @@ public:
     int level_height;
 
     Camera(SDL_Rect rect, int level_height);
-    float calculate_smoothing(int edge_distance, float min_smoothing, float max_smoothing);
+    float calculate_smoothing(int edge_distance, float min_smoothing, float max_smoothing, float range_limit);
     void center_on_object(const SDL_Rect& object_rect);
 
 };
