@@ -32,7 +32,8 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     PLATFORM_SCALE_FACTOR = config["PLATFORM_SCALE_FACTOR"];
 
     // Initialize random number generators
-    generator = std::default_random_engine(std::time(nullptr));
+    std::random_device rd;
+    generator = std::default_random_engine(rd());
     plat_distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
     plat_distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
     plat_type_distribution = std::uniform_int_distribution<int>(0, PLATFORM_TYPES-1);
