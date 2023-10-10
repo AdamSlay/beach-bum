@@ -30,6 +30,8 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     Y_MAX = config["Y_MAX"];
     PLATFORM_TYPES = config["PLATFORM_TYPES"];
     PLATFORM_SCALE_FACTOR = config["PLATFORM_SCALE_FACTOR"];
+    BACKGROUND_SPRITE_SHEET_PATH = config["BACKGROUND_SPRITE_PATH"];
+    PLATFORM_SPRITE_SHEET_PATH = config["PLATFORM_SPRITE_PATH"];
 
     // Initialize random number generators
     std::random_device rd;
@@ -39,15 +41,15 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     plat_type_distribution = std::uniform_int_distribution<int>(0, PLATFORM_TYPES-1);
     bg_distributionX = std::uniform_int_distribution(0, 3);
     bg_distributionY = std::uniform_int_distribution(0, 3);
-    ground_distribution = std::uniform_int_distribution<int>(GROUND_WIDTH_MIN, GROUND_WIDTH_MAX);
+    ground_distributionX = std::uniform_int_distribution<int>(GROUND_WIDTH_MIN, GROUND_WIDTH_MAX);
     gap_distribution = std::uniform_int_distribution<int>(GAP_WIDTH_MIN, GAP_WIDTH_MAX);
 
     nextColumnX = 0 - SCREEN_WIDTH;
-    bgSpriteSheet = IMG_LoadTexture(renderer, "../assets/bb_90s_pattern_dark.png");
+    bgSpriteSheet = IMG_LoadTexture(renderer, BACKGROUND_SPRITE_SHEET_PATH.c_str());
     background = generateTileableBackground();
 
     // Initialize platforms
-    std::string platform_path = "../assets/test_platforms.png";
+    std::string platform_path = PLATFORM_SPRITE_SHEET_PATH;
     if (!platform_texture.loadFromFile(platform_path, renderer)) {
         throw std::runtime_error("Failed to load platform texture from " + platform_path);
     }
@@ -77,7 +79,7 @@ void Level::generate_ground() {
     int potential_new_x = last_ground.x + last_ground.w + gap_distribution(generator);
     new_ground.x = potential_new_x;
     new_ground.y = 350;
-    new_ground.w = ground_distribution(generator);
+    new_ground.w = ground_distributionX(generator);
     new_ground.h = GROUND_HEIGHT;
 
     grounds.push_back(new_ground);

@@ -45,7 +45,8 @@ private:
     int Y_MIN;
     int Y_MAX;
     int PLATFORM_TYPES;
-    int platform_type;
+    std::string BACKGROUND_SPRITE_SHEET_PATH;
+    std::string PLATFORM_SPRITE_SHEET_PATH;
     int nextColumnX;
     Texture platform_texture;
     SDL_Rect platform_sprite_clips[4];
@@ -62,7 +63,7 @@ private:
     std::uniform_int_distribution<int> plat_type_distribution;
     std::uniform_int_distribution<int> bg_distributionX;
     std::uniform_int_distribution<int> bg_distributionY;
-    std::uniform_int_distribution<int> ground_distribution;
+    std::uniform_int_distribution<int> ground_distributionX;
     std::uniform_int_distribution<int> gap_distribution;
     SDL_Texture* bgSpriteSheet;
     std::vector<SDL_Texture*> backgroundColumns;
