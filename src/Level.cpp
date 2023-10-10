@@ -28,7 +28,6 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     X_MIN = config["X_MIN"];
     Y_MIN = config["Y_MIN"];
     Y_MAX = config["Y_MAX"];
-    PLATFORM_COUNT = config["PLATFORM_COUNT"];
     PLATFORM_TYPES = config["PLATFORM_TYPES"];
     PLATFORM_SCALE_FACTOR = config["PLATFORM_SCALE_FACTOR"];
 
@@ -36,14 +35,11 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     generator = std::default_random_engine(std::time(nullptr));
     plat_distributionX = std::uniform_int_distribution<int>(X_MIN, 100);
     plat_distributionY = std::uniform_int_distribution<int>(Y_MIN, Y_MAX);
+    plat_type_distribution = std::uniform_int_distribution<int>(0, PLATFORM_TYPES-1);
     bg_distributionX = std::uniform_int_distribution(0, 3);
     bg_distributionY = std::uniform_int_distribution(0, 3);
     ground_distribution = std::uniform_int_distribution<int>(GROUND_WIDTH_MIN, GROUND_WIDTH_MAX);
     gap_distribution = std::uniform_int_distribution<int>(GAP_WIDTH_MIN, GAP_WIDTH_MAX);
-
-    // TODO: remove this and pick random platform type for each platform in the generate_platform function
-    std::uniform_int_distribution<int> distributionPlatform(0, PLATFORM_COUNT - 1);
-    platform_type = distributionPlatform(generator) % 4;
 
     nextColumnX = 0 - SCREEN_WIDTH;
     bgSpriteSheet = IMG_LoadTexture(renderer, "../assets/bb_90s_pattern_dark.png");
@@ -89,16 +85,17 @@ void Level::generate_ground() {
 }
 
 void Level::generate_platform() {
-    SDL_Rect new_platform;
+    Platform new_platform;
     int potential_new_x = last_platform.x + last_platform.w + plat_distributionX(generator);
-    new_platform.x = potential_new_x;
-    new_platform.y = plat_distributionY(generator);
-    new_platform.w = PLATFORM_WIDTH * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
-    new_platform.h = PLATFORM_HEIGHT * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
+    new_platform.rect.x = potential_new_x;
+    new_platform.rect.y = plat_distributionY(generator);
+    new_platform.rect.w = PLATFORM_WIDTH * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
+    new_platform.rect.h = PLATFORM_HEIGHT * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
+    new_platform.type = plat_type_distribution(generator);
 
-    colliders.push_back(new_platform);
+    colliders.push_back(new_platform.rect);
     platforms.push_back(new_platform);
-    last_platform = new_platform;
+    last_platform = new_platform.rect;
 }
 
 SDL_Texture* Level::generateTileableBackground() {
@@ -154,12 +151,12 @@ void Level::render_ground(Camera &camera) {
 void Level::render_platforms(Camera &camera) {
     for (auto &platform : platforms) {
         // Loop to iterate through all platforms and render them
-        SDL_Rect render_rect = platform;
+        SDL_Rect render_rect = platform.rect;
         render_rect.x -= camera.camera_rect.x;
         render_rect.y -= camera.camera_rect.y;
 
         std::tuple<int, int> render_location = {render_rect.x, render_rect.y};
-        platform_texture.render(render_location, renderer, &platform_sprite_clips[platform_type], 0, PLATFORM_SCALE_FACTOR);
+        platform_texture.render(render_location, renderer, &platform_sprite_clips[platform.type], 0, PLATFORM_SCALE_FACTOR);
     }
 }
 

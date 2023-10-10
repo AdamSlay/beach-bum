@@ -8,6 +8,11 @@
 #ifndef SDL_PRACTICE_LEVEL_H
 #define SDL_PRACTICE_LEVEL_H
 
+struct Platform {
+    SDL_Rect rect;
+    int type;
+};
+
 class Level {
 public:
     Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders);
@@ -39,7 +44,6 @@ private:
     int X_MIN;
     int Y_MIN;
     int Y_MAX;
-    int PLATFORM_COUNT;
     int PLATFORM_TYPES;
     int platform_type;
     int nextColumnX;
@@ -48,13 +52,14 @@ private:
     SDL_Texture *background;
     SDL_Renderer* renderer;
     std::vector<SDL_Rect> colliders;
-    std::vector<SDL_Rect> platforms;
+    std::vector<Platform> platforms;
     std::vector<SDL_Rect> grounds;
     SDL_Rect last_ground;
     SDL_Rect last_platform;
     std::default_random_engine generator;
     std::uniform_int_distribution<int> plat_distributionX;
     std::uniform_int_distribution<int> plat_distributionY;
+    std::uniform_int_distribution<int> plat_type_distribution;
     std::uniform_int_distribution<int> bg_distributionX;
     std::uniform_int_distribution<int> bg_distributionY;
     std::uniform_int_distribution<int> ground_distribution;
