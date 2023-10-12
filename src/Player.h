@@ -8,6 +8,29 @@
 #include "Camera.h"
 #include "Texture.h"
 
+struct PlayerConfig {
+    int width;
+    int height;
+    float velocity;
+    float initialJumpVelocity;
+    int spawnX;
+    int spawnY;
+    int xColliderOffset;
+    int yColliderOffset;
+    int levelHeight;
+    int colliderEdgeBuffer;
+    float gravity;
+    float player_scale;
+    int left;
+    int right;
+    int suspendAscendMax;
+    int suspendDescendMax;
+    int suspendApexMin;
+    int suspendApexMax;
+
+    static PlayerConfig loadFromJson(const std::string& filePath);
+};
+
 class Player {
 public:
     std::string state;
@@ -20,13 +43,18 @@ public:
     int get_y() const;
     int get_width() const;
     int get_height() const;
+    SDL_Rect get_collider();
 
 private:
-    const int width, height;
-    const float velocity, initial_jump_velocity;
-    bool jumping, grounded;
-    int pos_x, pos_y, direction;
-    float vel_x, vel_y;
+    PlayerConfig config;
+    int jump_count;
+    bool jumping;
+    bool grounded;
+    int pos_x;
+    int pos_y;
+    int direction;
+    float vel_x;
+    float vel_y;
     SDL_Rect player_collider;
     Animator animator;
 

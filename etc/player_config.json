@@ -1,0 +1,20 @@
+{
+  "width": 32,
+  "height": 48,
+  "velocity": 400.0,
+  "initialJumpVelocity": 650.0,
+  "spawnX": 500,
+  "spawnY": 300,
+  "xColliderOffset": 18,
+  "yColliderOffset": 60,
+  "levelHeight": 800,
+  "colliderEdgeBuffer": 6,
+  "gravity": 1900.0,
+  "player_scale": 1.2,
+  "left": 1,
+  "right": 0,
+  "suspendAscendMax": -125,
+  "suspendDescendMax": 125,
+  "suspendApexMin": -50,
+  "suspendApexMax": 50
+}

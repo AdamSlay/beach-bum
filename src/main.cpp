@@ -140,6 +140,11 @@ int main( int argc, char* args[] ) {
 
         level.render(camera);
         player.render(camera);
+        // uncomment to render player collider
+//        SDL_Rect player_collider = player.get_collider();
+//        SDL_Rect collider_rect = {player_collider.x - camera.camera_rect.x, player_collider.y - camera.camera_rect.y, player_collider.w, player_collider.h};
+//        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Set color to red
+//        SDL_RenderDrawRect(renderer, &collider_rect);
 
         SDL_RenderPresent(renderer);
 
