@@ -26,47 +26,40 @@ SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 std::vector<SDL_Rect> colliders;
 
-bool init() {
+bool initialize_resources() {
     /**
      * Initialize SDL and create window
      */
 
-    //Initialization flag
-    bool success = true;
-
-    //Initialize SDL
+    // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-        success = false;
+        return false;
     }
-    else {
-        window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-        if(window == nullptr) {
-            std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-            success = false;
-        }
-        else {
-            // initialize renderer
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-            if (renderer == nullptr) {
-                std::cout << "Renderer could not be initialized! SDL_Error: " << SDL_GetError() << std::endl;
-                success = false;
-            }
-            else {
-                //Initialize renderer color
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-                // Initialize PNG loading
-                int imgFlags = IMG_INIT_PNG;
-                if (!(IMG_Init(imgFlags) & imgFlags)) {
-                    std::cout << "SDL_image could not be initialized!" << std::endl;
-                    std::cout << "SDL_Error: " << IMG_GetError() << std::endl;
-                }
-            }
-        }
+    // Initialize window
+    window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if(window == nullptr) {
+        std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
     }
-    return success;
+
+    // Initialize renderer
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (renderer == nullptr) {
+        std::cout << "Renderer could not be initialized! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Initialize PNG loading
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags)) {
+        std::cout << "SDL_image could not be initialized!" << std::endl;
+        std::cout << "SDL_Error: " << IMG_GetError() << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 void close() {
@@ -85,8 +78,8 @@ void close() {
 
 int main( int argc, char* args[] ) {
     //Start up SDL and create window
-    if(!init()) {
-        std::cout << "Failed to initialize!" << std::endl;
+    if(!initialize_resources()) {
+        std::cout << "Failed to initialize resources." << std::endl;
         return 1;
     }
 
@@ -98,32 +91,30 @@ int main( int argc, char* args[] ) {
     Player player(renderer, "Player");
     Level level(renderer, colliders);
 
-    // main loop
     bool quit = false;
     while(!quit) {
-        // frame timing
+        // start frame timing
         float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
         frame_start = SDL_GetTicks64();
 
+        // handle player input
         while(SDL_PollEvent( &e) != 0) {
             if(e.type == SDL_QUIT) {
-                // end runtime and close window if close button pressed
                 quit = true;
             }
             else {
-                // handle player input
                 player.handle_event(e);
             }
         }
 
-        // process player actions/movement
+        // process player actions/movement & update level
         colliders = level.get_colliders();
         player.move(delta_time, colliders);
         level.update(player.get_x(), camera.camera_rect.x);
 
+        // render everything
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
-
         level.render(camera);
         player.render(camera);
         // uncomment to render player collider
@@ -134,8 +125,7 @@ int main( int argc, char* args[] ) {
 
         SDL_RenderPresent(renderer);
 
-        // Frame timing
-        // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
+        // Frame Timing: Determine time it took to process this frame and delay if necessary to maintain constant frame rate
         frame_end = SDL_GetTicks64();
         auto frame_time = frame_end - frame_start; // time it took to process this frame
         if (frame_time < FRAME_DURATION) {
@@ -143,8 +133,6 @@ int main( int argc, char* args[] ) {
         }
     }
 
-    //Free resources and close SDL
     close();
-
     return 0;
 }
