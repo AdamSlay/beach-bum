@@ -17,9 +17,6 @@ const int SCREEN_HEIGHT = 420;
 const int LEVEL_HEIGHT = 800;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
-const int RIGHT = 0;
-const int LEFT = 1;
-const float PARALLAX_FACTOR = 0.9f;  // less than 1 to make the background move slower
 
 
 SDL_Window* window = nullptr;

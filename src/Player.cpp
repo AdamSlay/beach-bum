@@ -232,18 +232,8 @@ void Player::set_state() {
 }
 
 void Player::keep_player_on_screen() {
-    // keep player on screen
-    if (pos_x < 0) {
-        pos_x = 0;
-    }
-//    else if (pos_x + width > LEVEL_WIDTH) {
-//        pos_x = LEVEL_WIDTH - width;
-//    }
-    if (pos_y < 0) {
-        pos_y = 0;
-    }
-    else if (pos_y + config.height > config.levelHeight) {
-        // respawn at spawn location if you touch the bottom of the level
+    // respawn at spawn location if you fall off the level
+    if (pos_y + config.height > config.levelHeight) {
         pos_x = config.spawnX;
         pos_y = config.spawnY;
     }
