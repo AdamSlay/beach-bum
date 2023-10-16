@@ -119,21 +119,7 @@ int main( int argc, char* args[] ) {
         // process player actions/movement
         colliders = level.get_colliders();
         player.move(delta_time, colliders);
-
-        // check if it's time to generate a new ground
-        if (player.get_x() > level.get_last_ground().x) {
-            std::cout << "Player x: " << player.get_x() << ", Last ground x: " << level.get_last_ground().x << std::endl;
-            level.generate_ground();
-        }
-        // Check if it's time to generate a new background column
-        if (camera.camera_rect.x >= level.get_next_column_x()) {
-            level.generateBackgroundColumn();
-            level.increment_next_column_x();
-        }
-
-        if (player.get_x() > level.get_last_platform().x) {
-            level.generate_platform();
-        }
+        level.update(player.get_x(), camera.camera_rect.x);
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
         SDL_RenderClear(renderer);
@@ -148,8 +134,8 @@ int main( int argc, char* args[] ) {
 
         SDL_RenderPresent(renderer);
 
-         // Frame timing
-         // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
+        // Frame timing
+        // Determine time it took to process this frame and delay if necessary to maintain constant frame rate
         frame_end = SDL_GetTicks64();
         auto frame_time = frame_end - frame_start; // time it took to process this frame
         if (frame_time < FRAME_DURATION) {

@@ -17,6 +17,7 @@ class Level {
 public:
     Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders);
     ~Level();
+    void update(int player_x, int camera_x);
     void generate_ground();
     void generate_platform();
     void generateBackgroundColumn();

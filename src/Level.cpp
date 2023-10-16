@@ -76,6 +76,23 @@ Level::~Level() {
     background = nullptr;
 }
 
+void Level::update(int player_x, int camera_x) {
+    // check if it's time to generate a new ground
+    if (player_x > get_last_ground().x) {
+        generate_ground();
+    }
+
+    if (player_x > get_last_platform().x) {
+        generate_platform();
+    }
+
+    // Check if it's time to generate a new background column
+    if (camera_x >= get_next_column_x()) {
+        generateBackgroundColumn();
+        increment_next_column_x();
+    }
+}
+
 void Level::generate_ground() {
     SDL_Rect new_ground;
     int potential_new_x = last_ground.x + last_ground.w + gap_distribution(generator);
