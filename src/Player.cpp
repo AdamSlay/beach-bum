@@ -32,6 +32,7 @@ PlayerConfig PlayerConfig::loadFromJson(const std::string& filePath) {
     config.suspendDescendMax = configJson["suspendDescendMax"];
     config.suspendApexMin = configJson["suspendApexMin"];
     config.suspendApexMax = configJson["suspendApexMax"];
+    config.availableJumps = configJson["availableJumps"];
 
     return config;
 }
@@ -61,10 +62,10 @@ void Player::handle_event(SDL_Event& e) {
                     jump_count += 1;
                 }
                 // if you are in the air and have not double jumped, double jump
-                else if (!grounded && jump_count < 2) {
+                else if (!grounded && jump_count < config.availableJumps) {
                     vel_y = 0;
                     jump();
-                    jump_count += 2;  // here we add 2 to prevent player from having 2 jumps if they fell off a platform
+                    jump_count = config.availableJumps;  // here we set jumps to availableJumps to prevent player from having more than 1 jumps if they fell off a platform
                 }
                 break;
             case SDLK_LEFT:

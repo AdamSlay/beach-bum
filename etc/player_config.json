@@ -16,5 +16,6 @@
   "suspendAscendMax": -125,
   "suspendDescendMax": 125,
   "suspendApexMin": -50,
-  "suspendApexMax": 50
+  "suspendApexMax": 50,
+  "availableJumps": 2
 }

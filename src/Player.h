@@ -27,6 +27,7 @@ struct PlayerConfig {
     int suspendDescendMax;
     int suspendApexMin;
     int suspendApexMax;
+    int availableJumps;
 
     static PlayerConfig loadFromJson(const std::string& filePath);
 };
