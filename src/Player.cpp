@@ -87,7 +87,9 @@ void Player::handle_event(SDL_Event& e) {
     }
 
     // x-axis
-    vel_x = config.velocity;
+    vel_x = config.velocity;  // endless runner, always moving right
+
+    // This is the player controller if you don't want a runner
 //    if(currentKeyStates[SDL_SCANCODE_LEFT]) {
 //        vel_x = -config.velocity;
 //    }
