@@ -103,7 +103,7 @@ void Level::generate_ground() {
     SDL_Rect new_ground;
     int potential_new_x = last_terrain.x + last_terrain.w + gap_distribution(generator);
     new_ground.x = potential_new_x;
-    new_ground.y = GROUND_LEVEL_Y;
+    new_ground.y = plat_distributionY(generator);
     new_ground.w = ground_distributionX(generator);
     new_ground.h = GROUND_HEIGHT;
 
