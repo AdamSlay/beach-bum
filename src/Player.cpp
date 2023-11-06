@@ -87,15 +87,16 @@ void Player::handle_event(SDL_Event& e) {
     }
 
     // x-axis
-    if(currentKeyStates[SDL_SCANCODE_LEFT]) {
-        vel_x = -config.velocity;
-    }
-    else if(currentKeyStates[SDL_SCANCODE_RIGHT]) {
-        vel_x = config.velocity;
-    }
-    else {
-        vel_x = 0;
-    }
+    vel_x = config.velocity;
+//    if(currentKeyStates[SDL_SCANCODE_LEFT]) {
+//        vel_x = -config.velocity;
+//    }
+//    else if(currentKeyStates[SDL_SCANCODE_RIGHT]) {
+//        vel_x = config.velocity;
+//    }
+//    else {
+//        vel_x = 0;
+//    }
 }
 
 void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
