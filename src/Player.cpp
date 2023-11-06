@@ -107,6 +107,9 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
     move_player_along_axis(delta_time, collision_objects);
     keep_player_on_screen();
     set_state();
+    if (vel_x > 0) {
+        vel_x += 0.1;
+    }
 }
 
 void Player::jump() {
