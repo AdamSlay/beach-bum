@@ -63,12 +63,10 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
             platform_sprite_clips[i].h = PLATFORM_HEIGHT;
         }
     }
-    last_platform = {100, 400, 100, 100};  // the pre-first platform
+    last_platform = {100, 400, 0, 100};  // the pre-first platform
     last_ground = {0, GROUND_LEVEL_Y, 0, 500};  // the pre-first ground
+    last_terrain = {0, GROUND_LEVEL_Y, 0, 500};  // the pre-first terrain
 
-    // Generate the first platform and ground
-    generate_ground();
-    generate_platform();
 }
 
 Level::~Level() {
@@ -77,14 +75,8 @@ Level::~Level() {
 }
 
 void Level::update(int player_x, int camera_x) {
-    // check if it's time to generate a new ground
-    if (player_x > get_last_ground().x) {
-        generate_ground();
-    }
-
-    if (player_x > get_last_platform().x) {
-        generate_platform();
-    }
+    // check if it's time to generate a new terrain object
+    generate_terrain(player_x);
 
     // Check if it's time to generate a new background column
     if (camera_x >= get_next_column_x()) {
@@ -93,9 +85,21 @@ void Level::update(int player_x, int camera_x) {
     }
 }
 
+void Level::generate_terrain(int player_x) {
+    // Decide whether to generate a new ground or a new platform
+    if (player_x > get_last_terrain().x) {
+        int terrain_type = std::rand() % 2;
+        if (terrain_type == 0) {
+            generate_ground();
+        } else {
+            generate_platform();
+        }
+    }
+}
+
 void Level::generate_ground() {
     SDL_Rect new_ground;
-    int potential_new_x = last_ground.x + last_ground.w + gap_distribution(generator);
+    int potential_new_x = last_terrain.x + last_terrain.w + gap_distribution(generator);
     new_ground.x = potential_new_x;
     new_ground.y = GROUND_LEVEL_Y;
     new_ground.w = ground_distributionX(generator);
@@ -103,12 +107,12 @@ void Level::generate_ground() {
 
     grounds.push_back(new_ground);
     colliders.push_back(new_ground);
-    last_ground = new_ground;
+    last_terrain = new_ground;
 }
 
 void Level::generate_platform() {
     Platform new_platform;
-    int new_plat_x = last_platform.x + last_platform.w + plat_distributionX(generator);
+    int new_plat_x = last_terrain.x + last_terrain.w + plat_distributionX(generator);
     new_platform.rect.x = new_plat_x;
     new_platform.rect.y = plat_distributionY(generator);
     new_platform.rect.w = PLATFORM_WIDTH * PLATFORM_SCALE_FACTOR;  // scale the platform's collider to match rendered scale
@@ -117,7 +121,7 @@ void Level::generate_platform() {
 
     colliders.push_back(new_platform.rect);
     platforms.push_back(new_platform);
-    last_platform = new_platform.rect;
+    last_terrain = new_platform.rect;
 }
 
 SDL_Texture* Level::generateTileableBackground() {
@@ -201,6 +205,10 @@ SDL_Rect Level::get_last_platform() {
 
 SDL_Rect Level::get_last_ground() {
     return last_ground;
+}
+
+SDL_Rect Level::get_last_terrain() {
+    return last_terrain;
 }
 
 int Level::get_next_column_x() {

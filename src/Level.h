@@ -20,11 +20,13 @@ public:
     void update(int player_x, int camera_x);
     void generate_ground();
     void generate_platform();
+    void generate_terrain(int player_x);
     void generateBackgroundColumn();
     void render(Camera camera);
     std::vector<SDL_Rect> get_colliders();
     SDL_Rect get_last_platform();
     SDL_Rect get_last_ground();
+    SDL_Rect get_last_terrain();
     int get_next_column_x();
     void increment_next_column_x();
 
@@ -60,6 +62,7 @@ private:
     std::vector<SDL_Rect> grounds;
     SDL_Rect last_ground;
     SDL_Rect last_platform;
+    SDL_Rect last_terrain;
     std::default_random_engine generator;
     std::uniform_int_distribution<int> plat_distributionX;
     std::uniform_int_distribution<int> plat_distributionY;
