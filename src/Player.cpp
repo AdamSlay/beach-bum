@@ -74,6 +74,9 @@ void Player::handle_event(SDL_Event& e) {
             case SDLK_RIGHT:
                 direction = config.right;
                 break;
+            case SDLK_SPACE:
+                vel_x = config.velocity; // wait until user presses 'space' to start vel_x on a new run
+                break;
             default:
                 break;
         }
@@ -87,8 +90,6 @@ void Player::handle_event(SDL_Event& e) {
     }
 
     // x-axis
-    vel_x = config.velocity;  // endless runner, always moving right
-
     // This is the player controller if you don't want a runner
 //    if(currentKeyStates[SDL_SCANCODE_LEFT]) {
 //        vel_x = -config.velocity;
@@ -239,6 +240,7 @@ void Player::keep_player_on_screen() {
     if (pos_y + config.height > config.levelHeight) {
         pos_x = config.spawnX;
         pos_y = config.spawnY;
+        vel_x = 0;
     }
 }
 
