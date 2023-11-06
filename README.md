@@ -16,7 +16,8 @@ a different background and set of platforms is generated on this run:
 ![Beach Bum Example Gif 2](assets/bb_example_2.gif)
 
 ## Installation
-This project uses [vcpkg](https://github.com/microsoft/vcpkg).
+This project uses [vcpkg](https://github.com/microsoft/vcpkg), and requires [git](https://git-scm.com/) and [cmake](https://cmake.org/) to be installed. 
+If building on windows, [Visual Studio](https://visualstudio.microsoft.com/) is required because ```vcpkg``` uses the build tools that come with it.
 
 To build the project run:
 ```shell
