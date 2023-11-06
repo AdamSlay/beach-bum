@@ -64,8 +64,10 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
         }
     }
     last_platform = {100, 400, 0, 100};  // the pre-first platform
-    last_ground = {0, GROUND_LEVEL_Y, 0, 500};  // the pre-first ground
-    last_terrain = {0, GROUND_LEVEL_Y, 0, 500};  // the pre-first terrain
+    last_terrain = {0, GROUND_LEVEL_Y, 700, 500};  // the pre-first ground
+    last_ground = last_terrain;  // the pre-first terrain
+    grounds.push_back(last_terrain);
+    colliders.push_back(last_terrain);
 
 }
 
