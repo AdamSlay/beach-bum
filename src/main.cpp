@@ -114,6 +114,7 @@ int main( int argc, char* args[] ) {
         SDL_RenderClear(renderer);
         level.render(camera);
         player.render(camera);
+
         // uncomment to render player collider
 //        SDL_Rect player_collider = player.get_collider();
 //        SDL_Rect collider_rect = {player_collider.x - camera.camera_rect.x, player_collider.y - camera.camera_rect.y, player_collider.w, player_collider.h};
