@@ -15,5 +15,6 @@ fi
 ./vcpkg/vcpkg install nlohmann-json
 
 # Configure and build project
+mkdir -p build
 cmake -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake -B build
 cmake --build build
