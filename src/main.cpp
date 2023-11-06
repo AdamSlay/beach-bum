@@ -73,7 +73,7 @@ void close() {
     SDL_Quit();
 }
 
-int main( int argc, char* args[] ) {
+int main( int argc, char* argv[] ) {
     //Start up SDL and create window
     if(!initialize_resources()) {
         std::cout << "Failed to initialize resources." << std::endl;
