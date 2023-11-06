@@ -150,7 +150,6 @@ void Player::apply_gravity(float delta_time) {
     // if you're at the peak of your jump, lighten gravity a bit
     if (vel_y > 0 && vel_y < 150 && !grounded) {
         vel_y += (config.gravity * 0.1f) * delta_time;
-        vel_x *= 1.1;
     }
     else if (vel_y > 200 && !grounded) {
         vel_y += (config.gravity * 1.1f) * delta_time;
