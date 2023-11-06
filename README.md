@@ -18,14 +18,10 @@ a different background and set of platforms is generated on this run:
 ## Installation
 This project uses [vcpkg](https://github.com/microsoft/vcpkg).
 
-Follow the [install instructions](https://github.com/microsoft/vcpkg#quick-start-unix) to install ```vcpkg``` into the project folder. Then run the following to install the project dependencies:
+To build the project run:
 ```shell
-    ./vcpkg install sdl2
-    ./vcpkg install sdl2-image
-    ./vcpkg install nlohmann-json
+chmod +x build.sh
 ```
-
-if you're using an IDE to build and run your project, you'll need to add the following flag to your cmake options:
 ```shell
--DCMAKE_TOOLCHAIN_FILE=[project_dir or .]/scripts/buildsystems/vcpkg.cmake
+./build.sh
 ```
