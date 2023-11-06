@@ -1,4 +1,4 @@
-@echo off
+@echo on
 
 REM Check if vcpkg is installed
 if not exist "vcpkg" (
