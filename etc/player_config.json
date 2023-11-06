@@ -3,7 +3,7 @@
   "height": 48,
   "velocity": 400.0,
   "initialJumpVelocity": 650.0,
-  "spawnX": 500,
+  "spawnX": 0,
   "spawnY": 300,
   "xColliderOffset": 18,
   "yColliderOffset": 60,
