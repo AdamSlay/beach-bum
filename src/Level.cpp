@@ -108,6 +108,7 @@ void Level::generate_ground() {
     grounds.push_back(new_ground);
     colliders.push_back(new_ground);
     last_terrain = new_ground;
+    last_ground = new_ground;
 }
 
 void Level::generate_platform() {
@@ -122,6 +123,7 @@ void Level::generate_platform() {
     colliders.push_back(new_platform.rect);
     platforms.push_back(new_platform);
     last_terrain = new_platform.rect;
+    last_platform = new_platform.rect;
 }
 
 SDL_Texture* Level::generateTileableBackground() {
