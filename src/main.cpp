@@ -22,15 +22,12 @@ int main( int argc, char* argv[] ) {
         return 1;
     }
 
-    // Initialize game objects
     Camera camera;
     Player player(renderer, "Player");
     Level level(renderer);
 
-    // Run the game loop
     run_game_loop(player, level, camera, renderer);
-
-    // Free resources and close SDL
     close(renderer, window);
+
     return 0;
 }
