@@ -1,4 +1,63 @@
+#include <iostream>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
 #include "utils.h"
+
+
+const int SCREEN_WIDTH = 770;
+const int SCREEN_HEIGHT = 420;
+
+bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
+    /**
+     * Initialize SDL and create window
+     */
+
+    // Initialize SDL
+    if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Initialize window
+    window = SDL_CreateWindow("SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if(window == nullptr) {
+        std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Initialize renderer
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (renderer == nullptr) {
+        std::cout << "Renderer could not be initialized! SDL_Error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    // Initialize PNG loading
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags)) {
+        std::cout << "SDL_image could not be initialized!" << std::endl;
+        std::cout << "SDL_Error: " << IMG_GetError() << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+void close(SDL_Renderer* renderer, SDL_Window* window) {
+    // Free texture resources
+
+    //Destroy window/renderer
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    window = nullptr;
+    renderer = nullptr;
+
+    //Quit SDL/IMG subsystems
+    IMG_Quit();
+    SDL_Quit();
+}
 
 bool check_collision( SDL_Rect a, SDL_Rect b ) {
     /*
