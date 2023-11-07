@@ -22,25 +22,29 @@ const int FRAME_DURATION = 1000 / FPS;
 
 
 int main( int argc, char* argv[] ) {
+    /**
+     * Beach Bum Game
+     */
 
+    //Start up SDL and create window/renderer
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     std::vector<SDL_Rect> colliders;
-
-    //Start up SDL and create window
     if(!initialize_resources(renderer, window)) {
         std::cout << "Failed to initialize resources." << std::endl;
         return 1;
     }
 
-    SDL_Event e;
-    Uint64 frame_start = SDL_GetTicks64();
-    Uint64 frame_end{};
+    // Initialize Camera, Player, Level objects
     SDL_Rect camera_rect = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
     Camera camera(camera_rect, LEVEL_HEIGHT);
     Player player(renderer, "Player");
     Level level(renderer, colliders);
 
+    // Main loop
+    Uint64 frame_start = SDL_GetTicks64();
+    Uint64 frame_end{};
+    SDL_Event e;
     bool quit = false;
     while(!quit) {
         // start frame timing
@@ -67,12 +71,7 @@ int main( int argc, char* argv[] ) {
         SDL_RenderClear(renderer);
         level.render(camera);
         player.render(camera);
-
-        // uncomment to render player collider
-//        SDL_Rect player_collider = player.get_collider();
-//        SDL_Rect collider_rect = {player_collider.x - camera.camera_rect.x, player_collider.y - camera.camera_rect.y, player_collider.w, player_collider.h};
-//        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Set color to red
-//        SDL_RenderDrawRect(renderer, &collider_rect);
+//        render_player_collider(player, renderer, camera);  // uncomment to render player collider
 
         SDL_RenderPresent(renderer);
 

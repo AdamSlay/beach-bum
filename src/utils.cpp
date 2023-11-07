@@ -45,6 +45,18 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
     return true;
 }
 
+void render_player_collider(Player& player, SDL_Renderer* renderer, Camera& camera) {
+    /**
+     * Render player_collider rectangle
+     */
+
+    // uncomment to render player collider
+        SDL_Rect player_collider = player.get_collider();
+        SDL_Rect collider_rect = {player_collider.x - camera.camera_rect.x, player_collider.y - camera.camera_rect.y, player_collider.w, player_collider.h};
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);  // Set color to red
+        SDL_RenderDrawRect(renderer, &collider_rect);
+}
+
 void close(SDL_Renderer* renderer, SDL_Window* window) {
     /**
      * Free renderer and window resources, quit SDL2 and SDL2_image
