@@ -11,7 +11,7 @@ const int SCREEN_HEIGHT = 420;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 
-void run_game_loop(Player& player, Level& level, Camera& camera, SDL_Renderer* renderer) {
+void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera) {
     /**
      * Beach Bum Game loop
      */

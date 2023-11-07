@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "Level.h"
 
-void run_game_loop(Player& player, Level& level, Camera& camera, SDL_Renderer* renderer);
+void run_game_loop(SDL_Renderer* renderer,Player& player, Level& level, Camera& camera);
 void handle_keyboard_events(Player& player, SDL_Event& e, bool& quit);
 void close(SDL_Renderer* renderer, SDL_Window* window);
 void render_player_collider(Player& player, SDL_Renderer* renderer, Camera& camera);

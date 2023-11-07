@@ -22,10 +22,10 @@ int main( int argc, char* argv[] ) {
         return 1;
     }
 
-    Camera camera;
     Player player(renderer, "Player");
     Level level(renderer);
-    run_game_loop(player, level, camera, renderer);
+    Camera camera;
+    run_game_loop(renderer, player, level, camera);
     close(renderer, window);
 
     return 0;
