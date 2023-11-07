@@ -46,7 +46,9 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
 }
 
 void close(SDL_Renderer* renderer, SDL_Window* window) {
-    // Free texture resources
+    /**
+     * Free renderer and window resources, quit SDL2 and SDL2_image
+     */
 
     //Destroy window/renderer
     SDL_DestroyRenderer(renderer);
@@ -60,7 +62,7 @@ void close(SDL_Renderer* renderer, SDL_Window* window) {
 }
 
 bool check_collision( SDL_Rect a, SDL_Rect b ) {
-    /*
+    /**
      * Check for collision between two rectangles on all sides
      */
 
@@ -104,7 +106,7 @@ bool check_collision( SDL_Rect a, SDL_Rect b ) {
 
 bool check_collision_yax(SDL_Rect a, SDL_Rect b)
 {
-    /*
+    /**
      * check_collision() with a 1 pixel buffer on the bottom of 'a'.
      * This helps the player know when it is touching the ground and
      * prevents the player player_collider from getting stuck when moving along the x-axis.
