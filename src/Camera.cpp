@@ -2,9 +2,8 @@
 
 #include "Camera.h"
 
-Camera::Camera(SDL_Rect camera_rect, int height) :
-        camera_rect(camera_rect),
-        level_height(height) {}
+Camera::Camera(SDL_Rect camera_rect) :
+        camera_rect(camera_rect) {}
 
 float Camera::calculate_smoothing(int edge_distance, float min_smoothing, float max_smoothing, float range_limit) {
     // if we're within the range limit, interpolate between min and max smoothing
@@ -22,7 +21,7 @@ void Camera::center_on_object(const SDL_Rect& object_rect) {
 
     // calculate the distance to the edge of the level
     int edge_distance_x = std::min(camera_rect.x, (camera_rect.x + camera_rect.w));
-    int edge_distance_y = std::min(camera_rect.y, level_height - (camera_rect.y + camera_rect.h));
+    int edge_distance_y = std::min(camera_rect.y, (camera_rect.h + 400) - (camera_rect.y + camera_rect.h));
 
     // calculate the smoothing factor based on the distance to the edge
     float smoothing_x = calculate_smoothing(edge_distance_x, 0.04f, 0.5f, 200.0f);
@@ -39,7 +38,4 @@ void Camera::center_on_object(const SDL_Rect& object_rect) {
         camera_rect.y = 170;
     }
 
-    if (camera_rect.y > level_height - camera_rect.h) {
-        camera_rect.y = level_height - camera_rect.h;
-    }
 }
