@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Camera.h"
 
+void handle_keyboard_events(Player& player, SDL_Event& e, bool& quit);
 void close(SDL_Renderer* renderer, SDL_Window* window);
 void render_player_collider(Player& player, SDL_Renderer* renderer, Camera& camera);
 bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window);

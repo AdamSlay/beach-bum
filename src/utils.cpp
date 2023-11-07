@@ -45,6 +45,18 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
     return true;
 }
 
+void handle_keyboard_events(Player& player, SDL_Event& e, bool& quit) {
+    // handle player input
+    while(SDL_PollEvent( &e) != 0) {
+        if(e.type == SDL_QUIT) {
+            quit = true;
+        }
+        else {
+            player.handle_event(e);
+        }
+    }
+}
+
 void render_player_collider(Player& player, SDL_Renderer* renderer, Camera& camera) {
     /**
      * Render player_collider rectangle

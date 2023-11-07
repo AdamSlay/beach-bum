@@ -51,15 +51,7 @@ int main( int argc, char* argv[] ) {
         float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
         frame_start = SDL_GetTicks64();
 
-        // handle player input
-        while(SDL_PollEvent( &e) != 0) {
-            if(e.type == SDL_QUIT) {
-                quit = true;
-            }
-            else {
-                player.handle_event(e);
-            }
-        }
+        handle_keyboard_events(player, e, quit);
 
         // process player actions/movement & update level
         colliders = level.get_colliders();
