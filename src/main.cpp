@@ -25,7 +25,6 @@ int main( int argc, char* argv[] ) {
     Camera camera;
     Player player(renderer, "Player");
     Level level(renderer);
-
     run_game_loop(player, level, camera, renderer);
     close(renderer, window);
 
