@@ -11,12 +11,6 @@
 
 #include "utils.h"
 
-// Constants
-const int ORIGIN_X = 0;
-const int ORIGIN_Y = 0;
-const int SCREEN_WIDTH = 770;
-const int SCREEN_HEIGHT = 420;
-
 
 int main( int argc, char* argv[] ) {
     /**
@@ -32,8 +26,7 @@ int main( int argc, char* argv[] ) {
     }
 
     // Camera
-    SDL_Rect camera_rect = {ORIGIN_X, ORIGIN_Y, SCREEN_WIDTH, SCREEN_HEIGHT};
-    Camera camera(camera_rect);
+    Camera camera;
     // Player
     Player player(renderer, "Player");
     // Level

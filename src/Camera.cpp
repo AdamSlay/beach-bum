@@ -1,9 +1,20 @@
 #include <algorithm>
+#include <fstream>
+
+#include <nlohmann/json.hpp>
 
 #include "Camera.h"
 
-Camera::Camera(SDL_Rect camera_rect) :
-        camera_rect(camera_rect) {}
+Camera::Camera(){
+    std::ifstream config_file("../etc/camera_config.json");
+    nlohmann::json config;
+    config_file >> config;
+    origin_x = config["origin_x"];
+    origin_y = config["origin_y"];
+    screen_width = config["screen_width"];
+    screen_height = config["screen_height"];
+    camera_rect = {origin_x, origin_y, screen_width, screen_height};
+}
 
 float Camera::calculate_smoothing(int edge_distance, float min_smoothing, float max_smoothing, float range_limit) {
     // if we're within the range limit, interpolate between min and max smoothing
