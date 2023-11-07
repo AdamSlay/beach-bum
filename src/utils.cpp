@@ -11,7 +11,7 @@ const int SCREEN_HEIGHT = 420;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 
-void run_game_loop(Player& player, Level& level, Camera& camera, SDL_Renderer* renderer, std::vector<SDL_Rect>& colliders) {
+void run_game_loop(Player& player, Level& level, Camera& camera, SDL_Renderer* renderer) {
     /**
      * Beach Bum Game loop
      */
@@ -20,6 +20,7 @@ void run_game_loop(Player& player, Level& level, Camera& camera, SDL_Renderer* r
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
     SDL_Event e;
+    std::vector<SDL_Rect> colliders;
 
     bool quit = false;
     while(!quit) {

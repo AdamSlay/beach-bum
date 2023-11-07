@@ -6,8 +6,8 @@
 
 #include "Level.h"
 
-Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
-        : renderer(_renderer), colliders(_colliders), platforms() {
+Level::Level(SDL_Renderer* _renderer)
+        : renderer(_renderer), platforms() {
 
     std::ifstream config_file("../etc/level_config.json");
     nlohmann::json config;
@@ -34,6 +34,7 @@ Level::Level(SDL_Renderer* _renderer, std::vector<SDL_Rect>& _colliders)
     PLATFORM_SCALE_FACTOR = config["PLATFORM_SCALE_FACTOR"];
     BACKGROUND_SPRITE_SHEET_PATH = config["BACKGROUND_SPRITE_PATH"];
     PLATFORM_SPRITE_SHEET_PATH = config["PLATFORM_SPRITE_PATH"];
+    colliders = std::vector<SDL_Rect>();
 
     // Initialize random number generators
     std::random_device rd;

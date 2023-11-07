@@ -1,8 +1,5 @@
 #define SDL_MAIN_HANDLED
 #include <iostream>
-#include <vector>
-
-#include <SDL2/SDL.h>
 
 #include "Camera.h"
 #include "Level.h"
@@ -25,16 +22,13 @@ int main( int argc, char* argv[] ) {
         return 1;
     }
 
-    // Camera
+    // Initialize game objects
     Camera camera;
-    // Player
     Player player(renderer, "Player");
-    // Level
-    std::vector<SDL_Rect> colliders;
-    Level level(renderer, colliders);
+    Level level(renderer);
 
     // Run the game loop
-    run_game_loop(player, level, camera, renderer, colliders);
+    run_game_loop(player, level, camera, renderer);
 
     // Free resources and close SDL
     close(renderer, window);
