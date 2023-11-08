@@ -103,8 +103,8 @@ void Player::handle_event(SDL_Event& e) {
 void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
     apply_gravity(delta_time);
     move_player_along_axis(delta_time, collision_objects);
-    keep_player_on_screen();
     set_state();
+    keep_player_on_screen();
     if (vel_x > 0) {
         vel_x += 0.1;
     }
@@ -245,6 +245,7 @@ void Player::keep_player_on_screen() {
         pos_x = config.spawnX;
         pos_y = config.spawnY;
         vel_x = 0;
+        state = "dead";
     }
 }
 

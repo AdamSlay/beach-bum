@@ -17,42 +17,66 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
      * Beach Bum Game loop
      */
 
-    // Main loop
-    Uint64 frame_start = SDL_GetTicks64();
-    Uint64 frame_end{};
-    SDL_Event e;
-    std::vector<SDL_Rect> colliders;
+    int total_score{};
+    int lives = 3;
+    while (lives > 0){
 
-    bool quit = false;
-    while(!quit) {
-        // start frame timing
-        float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
-        frame_start = SDL_GetTicks64();
+        // Main loop
+        Uint64 frame_start = SDL_GetTicks64();
+        Uint64 frame_end{};
+        SDL_Event e;
+        std::vector<SDL_Rect> colliders;
+        int score;
 
-        handle_keyboard_events(player, e, quit);
+        bool quit = false;
+        while(!quit) {
+            // start frame timing
+            float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
+            frame_start = SDL_GetTicks64();
 
-        // process player actions/movement & update level
-        colliders = level.get_colliders();
-        player.move(delta_time, colliders);
-        level.update(player.get_x(), camera.camera_rect.x);
+            handle_keyboard_events(player, e, quit);
 
-        // render everything
-        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-        SDL_RenderClear(renderer);
-        level.render(camera);
-        player.render(camera);
-        render_score(renderer, std::to_string(player.get_x() / 10), font, {255, 245, 140, 255});
+            // process player actions/movement & update level
+            colliders = level.get_colliders();
+            player.move(delta_time, colliders);
+            level.update(player.get_x(), camera.camera_rect.x);
+
+            // Game Over and Score Display
+            if (player.state == "dead") {
+                lives--;
+                total_score += score;
+                if (lives == 0) {
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+                    SDL_RenderClear(renderer);
+                    render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, {255, 245, 140, 255});
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(2000);
+                }
+                quit = true;
+            }
+
+
+            // render everything
+            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+            SDL_RenderClear(renderer);
+            level.render(camera);
+            player.render(camera);
+            score = player.get_x() / 10;
+            render_score(renderer, std::to_string(score), font, {255, 245, 140, 255});
 //        render_player_collider(player, renderer, camera);  // uncomment to render player collider
 
-        SDL_RenderPresent(renderer);
+            SDL_RenderPresent(renderer);
 
-        // Frame Timing: Determine time it took to process this frame and delay if necessary to maintain constant frame rate
-        frame_end = SDL_GetTicks64();
-        auto frame_time = frame_end - frame_start; // time it took to process this frame
-        if (frame_time < FRAME_DURATION) {
-            SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
+            // Frame Timing: Determine time it took to process this frame and delay if necessary to maintain constant frame rate
+            frame_end = SDL_GetTicks64();
+            auto frame_time = frame_end - frame_start; // time it took to process this frame
+            if (frame_time < FRAME_DURATION) {
+                SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
+            }
         }
+
     }
+
 
 
 }
