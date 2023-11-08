@@ -64,7 +64,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
             player.render(camera);
             score = player.get_x() / 10;
             if (score == 0) {
-                render_score(renderer, "Press SPACE to Begin", font, {255, 245, 140, 255});
+                render_score(renderer, "Press [SPACE] to Begin", font, {255, 245, 140, 255});
             }
             else {
                 render_score(renderer, std::to_string(score), font, {255, 245, 140, 255});
