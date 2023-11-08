@@ -19,7 +19,8 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
 
     int total_score{};
     int lives = 3;
-    while (lives > 0){
+    bool quit = false;
+    while (lives > 0 && !quit){
 
         // Main loop
         Uint64 frame_start = SDL_GetTicks64();
@@ -27,9 +28,8 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
         SDL_Event e;
         std::vector<SDL_Rect> colliders;
         int score;
-
-        bool quit = false;
-        while(!quit) {
+        bool end_run = false;
+        while(!quit && !end_run) {
             // start frame timing
             float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
             frame_start = SDL_GetTicks64();
@@ -52,7 +52,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     SDL_RenderPresent(renderer);
                     SDL_Delay(5000);
                 }
-                quit = true;
+                end_run = true;
             }
 
 
