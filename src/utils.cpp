@@ -96,7 +96,7 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window, TTF_Font
     }
 
     // FONT
-    font = TTF_OpenFont("../etc/fonts/SuperFunky.ttf", 24);
+    font = TTF_OpenFont("../assets/fonts/SuperFunky.ttf", 24);
     if (font == nullptr) {
         std::cout << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
         return false;
