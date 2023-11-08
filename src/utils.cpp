@@ -12,17 +12,10 @@ const int SCREEN_HEIGHT = 420;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 
-void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera) {
+void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera, TTF_Font* font) {
     /**
      * Beach Bum Game loop
      */
-
-    // FONT
-    TTF_Font* font = TTF_OpenFont("../etc/fonts/SuperFunky.ttf", 24);
-    if (font == nullptr) {
-        std::cout << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
-        return;
-    }
 
     // Main loop
     Uint64 frame_start = SDL_GetTicks64();
@@ -64,7 +57,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
 
 }
 
-bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
+bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window, TTF_Font*& font) {
     /**
      * Initialize SDL and create window
      */
@@ -99,6 +92,13 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
 
     if(TTF_Init() == -1) {
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return false;
+    }
+
+    // FONT
+    font = TTF_OpenFont("../etc/fonts/SuperFunky.ttf", 24);
+    if (font == nullptr) {
+        std::cout << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
         return false;
     }
 

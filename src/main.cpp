@@ -17,7 +17,8 @@ int main( int argc, char* argv[] ) {
     // Initialize SDL and create window/renderer
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
-    if(!initialize_resources(renderer, window)) {
+    TTF_Font* font = nullptr;
+    if(!initialize_resources(renderer, window, font)) {
         std::cout << "Failed to initialize resources." << std::endl;
         return 1;
     }
@@ -25,7 +26,7 @@ int main( int argc, char* argv[] ) {
     Player player(renderer, "Player");
     Level level(renderer);
     Camera camera;
-    run_game_loop(renderer, player, level, camera);
+    run_game_loop(renderer, player, level, camera, font);
     close(renderer, window);
 
     return 0;
