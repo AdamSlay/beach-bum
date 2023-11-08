@@ -17,6 +17,13 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
      * Beach Bum Game loop
      */
 
+    // FONT
+    TTF_Font* font = TTF_OpenFont("../etc/fonts/SuperFunky.ttf", 24);
+    if (font == nullptr) {
+        std::cout << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return;
+    }
+
     // Main loop
     Uint64 frame_start = SDL_GetTicks64();
     Uint64 frame_end{};
@@ -41,6 +48,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
         SDL_RenderClear(renderer);
         level.render(camera);
         player.render(camera);
+        render_score(renderer, std::to_string(player.get_x() / 10), font, {255, 245, 140, 255});
 //        render_player_collider(player, renderer, camera);  // uncomment to render player collider
 
         SDL_RenderPresent(renderer);
@@ -107,6 +115,28 @@ void handle_keyboard_events(Player& player, SDL_Event& e, bool& quit) {
             player.handle_event(e);
         }
     }
+}
+
+void render_score(SDL_Renderer* renderer, const std::string& text, TTF_Font* font, SDL_Color color) {
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
+    if (textSurface == nullptr) {
+        std::cout << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    if (textTexture == nullptr) {
+        std::cout << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    int textWidth = textSurface->w;
+    int textHeight = textSurface->h;
+    SDL_FreeSurface(textSurface);
+
+    SDL_Rect renderQuad = {360, 50, textWidth, textHeight};
+    SDL_RenderCopy(renderer, textTexture, nullptr, &renderQuad);
+    SDL_DestroyTexture(textTexture);
 }
 
 void render_player_collider(Player& player, SDL_Renderer* renderer, Camera& camera) {
