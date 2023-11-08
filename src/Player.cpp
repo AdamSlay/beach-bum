@@ -59,13 +59,11 @@ void Player::handle_event(SDL_Event& e) {
                 // if you are grounded, jump
                 if (!jumping && grounded) {
                     jump();
-                    jump_count += 1;
                 }
                 // if you are in the air and have not double jumped, double jump
                 else if (!grounded && jump_count < config.availableJumps) {
                     vel_y = 0;
                     jump();
-                    jump_count = config.availableJumps;  // here we set jumps to availableJumps to prevent player from having more than 1 jumps if they fell off a platform
                 }
                 break;
             case SDLK_LEFT:
@@ -115,7 +113,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
 void Player::jump() {
    vel_y -= config.initialJumpVelocity;
    jumping = true;
-   grounded = false;
+   jump_count += 1;
 }
 
 void Player::render(Camera& camera) {
@@ -211,7 +209,10 @@ void Player::move_player_along_axis(float delta_time, std::vector<SDL_Rect>& col
 }
 
 void Player::set_state() {
-
+    // always reset jump_count if grounded.
+    if (grounded) {
+        jump_count = 0;
+    }
     // determine if running
     if (vel_x != 0 && grounded) {
         state = "running";
