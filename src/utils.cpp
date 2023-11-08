@@ -50,7 +50,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     SDL_RenderClear(renderer);
                     render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, {255, 245, 140, 255});
                     SDL_RenderPresent(renderer);
-                    SDL_Delay(2000);
+                    SDL_Delay(5000);
                 }
                 quit = true;
             }
