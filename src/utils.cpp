@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "utils.h"
 
@@ -88,6 +89,11 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window) {
         return false;
     }
 
+    if(TTF_Init() == -1) {
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -128,6 +134,7 @@ void close(SDL_Renderer* renderer, SDL_Window* window) {
 
     //Quit SDL/IMG subsystems
     IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }
 
