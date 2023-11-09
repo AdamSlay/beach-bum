@@ -53,6 +53,14 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     SDL_Delay(5000);
                     quit = true;
                 }
+                else {
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+                    SDL_RenderClear(renderer);
+                    std::string end_run_string = "Run Score: " + std::to_string(score);
+                    render_score(renderer, end_run_string, font, {255, 245, 140, 255});
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(4000);
+                }
                 end_run = true;
             }
 
