@@ -13,9 +13,9 @@
   "player_scale": 1.2,
   "left": 1,
   "right": 0,
-  "suspendAscendMax": -125,
-  "suspendDescendMax": 125,
-  "suspendApexMin": -50,
-  "suspendApexMax": 50,
+  "suspendAscendMax": -200,
+  "suspendDescendMax": 200,
+  "suspendApexMin": -100,
+  "suspendApexMax": 100,
   "availableJumps": 2
 }
