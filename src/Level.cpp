@@ -90,7 +90,7 @@ void Level::update(int player_x, int camera_x) {
 
 void Level::generate_terrain(int player_x) {
     // Decide whether to generate a new ground or a new platform
-    if (player_x > get_last_terrain().x) {
+    if (player_x > get_last_terrain().x - SCREEN_WIDTH) {
         int terrain_type = std::rand() % 2;
         if (terrain_type == 0) {
             generate_ground();
