@@ -20,6 +20,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
     int total_score{};
     int lives = 3;
     bool quit = false;
+    // TODO: add a main menu screen with options to start a new game, view high scores, and quit
     while (lives > 0 && !quit){
 
         // Main loop
@@ -46,6 +47,8 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                 lives--;
                 total_score += score;
                 if (lives == 0) {
+                    // Show Game Over screen w/ total score then exit
+                    // TODO: keep track of high scores in high_scores.txt file and display them on the Game Over screen
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
                     SDL_RenderClear(renderer);
                     render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, {255, 245, 140, 255});
@@ -54,6 +57,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     quit = true;
                 }
                 else {
+                    // Show end of run score then delay
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
                     SDL_RenderClear(renderer);
                     std::string end_run_string = "Run Score: " + std::to_string(score);
@@ -61,6 +65,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     SDL_RenderPresent(renderer);
                     SDL_Delay(4000);
                 }
+                // restart the loop
                 end_run = true;
             }
 

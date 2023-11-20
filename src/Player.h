@@ -28,6 +28,8 @@ struct PlayerConfig {
     int suspendApexMin;
     int suspendApexMax;
     int availableJumps;
+    float dashDuration;
+    float dashCooldown;
 
     static PlayerConfig loadFromJson(const std::string& filePath);
 };
@@ -40,6 +42,7 @@ public:
     void move(float delta_time, std::vector<SDL_Rect>& collision_objects);
     void render(Camera& camera);
     void jump();
+    void dash();
     int get_x() const;
     int get_y() const;
     int get_width() const;
@@ -56,6 +59,8 @@ private:
     int direction;
     float vel_x;
     float vel_y;
+    float dash_time_remaining;
+    float dash_cooldown_remaining;
     SDL_Rect player_collider;
     Animator animator;
 

@@ -33,7 +33,8 @@ PlayerConfig PlayerConfig::loadFromJson(const std::string& filePath) {
     config.suspendApexMin = configJson["suspendApexMin"];
     config.suspendApexMax = configJson["suspendApexMax"];
     config.availableJumps = configJson["availableJumps"];
-
+    config.dashDuration = configJson["dashDuration"];
+    config.dashCooldown = configJson["dashCooldown"];
     return config;
 }
 
@@ -46,6 +47,8 @@ Player::Player(SDL_Renderer* renderer, std::string animatorType)
     pos_y = config.spawnY;
     player_collider.w = config.width - (config.colliderEdgeBuffer);
     player_collider.h = config.height;
+    dash_time_remaining = 0;
+    dash_cooldown_remaining = 0;
 }
 
 void Player::handle_event(SDL_Event& e) {
@@ -66,11 +69,13 @@ void Player::handle_event(SDL_Event& e) {
                     jump();
                 }
                 break;
-            case SDLK_LEFT:
-                direction = config.left;
-                break;
+                // don't do anything if you press left
+//            case SDLK_LEFT:
+//                direction = config.left;
+//                break;
             case SDLK_RIGHT:
                 direction = config.right;
+                dash();
                 break;
             case SDLK_SPACE:
                 vel_x = config.velocity; // wait until user presses 'space' to start vel_x on a new run
@@ -103,6 +108,18 @@ void Player::handle_event(SDL_Event& e) {
 void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
     apply_gravity(delta_time);
     move_player_along_axis(delta_time, collision_objects);
+
+    if (dash_time_remaining > 0) {
+        dash_time_remaining -= delta_time;
+            if (dash_time_remaining <= 0) {
+                vel_x -= config.velocity * 2;
+                dash_cooldown_remaining = config.dashCooldown; // can't dash again for 2 seconds
+            }
+        }
+    else if (dash_cooldown_remaining > 0) {
+        dash_cooldown_remaining -= delta_time;
+    }
+
     set_state();
     keep_player_on_screen();
     if (vel_x > 0) {
@@ -114,6 +131,13 @@ void Player::jump() {
    vel_y -= config.initialJumpVelocity;
    jumping = true;
    jump_count += 1;
+}
+
+void Player::dash() {
+    if (dash_cooldown_remaining <= 0) {
+        vel_x += config.velocity * 2;
+        dash_time_remaining = config.dashDuration;
+    }
 }
 
 void Player::render(Camera& camera) {
