@@ -118,7 +118,6 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
         }
     }
     else if (dash_cooldown_remaining > 0) {
-        // TODO: fix issue where cooldown is seemingly not being set
         dash_cooldown_remaining -= delta_time;
     }
 
