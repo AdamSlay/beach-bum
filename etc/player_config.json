@@ -18,6 +18,7 @@
   "suspendApexMin": -100,
   "suspendApexMax": 100,
   "availableJumps": 2,
-  "dashDuration": 0.2,
-  "dashCooldown": 0.2
+  "dashVelocity": 1200.0,
+  "dashDuration": 0.28,
+  "dashCooldown": 0.6
 }

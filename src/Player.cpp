@@ -35,6 +35,7 @@ PlayerConfig PlayerConfig::loadFromJson(const std::string& filePath) {
     config.availableJumps = configJson["availableJumps"];
     config.dashDuration = configJson["dashDuration"];
     config.dashCooldown = configJson["dashCooldown"];
+    config.dashVelocity = configJson["dashVelocity"];
     return config;
 }
 
@@ -111,12 +112,13 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
 
     if (dash_time_remaining > 0) {
         dash_time_remaining -= delta_time;
-            if (dash_time_remaining <= 0) {
-                vel_x -= config.velocity * 2;
-                dash_cooldown_remaining = config.dashCooldown; // can't dash again for 2 seconds
-            }
+        if (dash_time_remaining <= 0) {
+            vel_x -= config.dashVelocity;
+            dash_cooldown_remaining = config.dashCooldown; // can't dash again until cooldown over
         }
+    }
     else if (dash_cooldown_remaining > 0) {
+        // TODO: fix issue where cooldown is seemingly not being set
         dash_cooldown_remaining -= delta_time;
     }
 
@@ -134,8 +136,8 @@ void Player::jump() {
 }
 
 void Player::dash() {
-    if (dash_cooldown_remaining <= 0) {
-        vel_x += config.velocity * 2;
+    if (dash_cooldown_remaining <= 0 && dash_time_remaining <= 0) {
+        vel_x += config.dashVelocity;
         dash_time_remaining = config.dashDuration;
     }
 }

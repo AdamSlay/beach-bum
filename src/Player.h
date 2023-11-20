@@ -30,6 +30,7 @@ struct PlayerConfig {
     int availableJumps;
     float dashDuration;
     float dashCooldown;
+    float dashVelocity;
 
     static PlayerConfig loadFromJson(const std::string& filePath);
 };
