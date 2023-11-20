@@ -54,3 +54,7 @@ void Camera::center_on_object(const SDL_Rect& object_rect) {
     }
 
 }
+
+void Camera::reset() {
+    camera_rect = {origin_x, origin_y, screen_width, screen_height};
+}

@@ -63,6 +63,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     std::string end_run_string = "Run Score: " + std::to_string(score);
                     render_score(renderer, end_run_string, font, {255, 245, 140, 255});
                     SDL_RenderPresent(renderer);
+                    camera.reset();
                     SDL_Delay(4000);
                 }
                 // restart the loop

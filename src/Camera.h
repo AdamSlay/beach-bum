@@ -16,6 +16,7 @@ public:
     Camera();
     float calculate_smoothing(int obj_distance, float min_smoothing, float max_smoothing, float range_limit);
     void center_on_object(const SDL_Rect& object_rect);
+    void reset();
 
 };
 
