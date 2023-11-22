@@ -2,7 +2,7 @@
   "width": 32,
   "height": 48,
   "velocity": 400.0,
-  "initialJumpVelocity": 650.0,
+  "initialJumpVelocity": 720.0,
   "spawnX": 0,
   "spawnY": 300,
   "xColliderOffset": 18,
