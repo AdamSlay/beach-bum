@@ -12,15 +12,37 @@ const int SCREEN_HEIGHT = 420;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 
-void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera, TTF_Font* font) {
+void start_menu(SDL_Renderer* renderer, TTF_Font* font, bool& quit) {
+    SDL_Event e;
+    while (!quit) {
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+            else if (e.type == SDL_KEYDOWN) {
+                switch (e.key.keysym.sym) {
+                    case SDLK_s:
+                        return;
+                    case SDLK_q:
+                        exit(0);
+                }
+            }
+        }
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+        SDL_RenderClear(renderer);
+        render_score(renderer, "Press S to Start\nPress Q to Quit", font, {255, 245, 140, 255});
+        SDL_RenderPresent(renderer);
+    }
+}
+
+void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera, TTF_Font* font, bool& quit) {
     /**
      * Beach Bum Game loop
      */
 
     int total_score{};
     int lives = 3;
-    bool quit = false;
-    // TODO: add a main menu screen with options to start a new game, view high scores, and quit
+    
     while (lives > 0 && !quit){
 
         // Main loop
@@ -54,7 +76,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, {255, 245, 140, 255});
                     SDL_RenderPresent(renderer);
                     SDL_Delay(5000);
-                    quit = true;
+//                    quit = true;  // uncomment to end execution after game over
                 }
                 else {
                     // Show end of run score then delay
@@ -96,8 +118,6 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
         }
 
     }
-
-
 
 }
 

@@ -26,7 +26,11 @@ int main( int argc, char* argv[] ) {
     Player player(renderer, "Player");
     Level level(renderer);
     Camera camera;
-    run_game_loop(renderer, player, level, camera, font);
+    bool quit = false;
+    while (!quit) {
+        start_menu(renderer, font, quit);
+        run_game_loop(renderer, player, level, camera, font, quit);
+    }
     close(renderer, window);
 
     return 0;
