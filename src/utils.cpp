@@ -38,7 +38,8 @@ void start_menu(SDL_Renderer* renderer, TTF_Font* font, bool& quit) {
     }
 }
 
-void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera, TTF_Font* font, bool& quit) {
+
+void game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera, TTF_Font* font, bool& quit) {
     /**
      * Beach Bum Game loop
      */
@@ -47,82 +48,90 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
     int lives = 3;
     
     while (lives > 0 && !quit){
-
-        // Main loop
-        Uint64 frame_start = SDL_GetTicks64();
-        Uint64 frame_end{};
-        SDL_Event e;
-        std::vector<SDL_Rect> colliders;
-        int score;
-        bool end_run = false;
-        while(!quit && !end_run) {
-            // start frame timing
-            float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
-            frame_start = SDL_GetTicks64();
-
-            handle_keyboard_events(player, e, quit);
-
-            // process player actions/movement & update level
-            colliders = level.get_colliders();
-            player.move(delta_time, colliders);
-            level.update(player.get_x(), camera.camera_rect.x);
-
-            // Game Over and Score Display
-            if (player.state == "dead") {
-                lives--;
-                total_score += score;
-                if (lives == 0) {
-                    // Show Game Over screen w/ total score then exit
-                    // TODO: keep track of high scores in high_scores.txt file and display them on the Game Over screen
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
-                    SDL_RenderClear(renderer);
-                    render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
-                    SDL_RenderPresent(renderer);
-                    SDL_Delay(5000);
-//                    quit = true;  // uncomment to end execution after game over
-                }
-                else {
-                    // Show end of run score then delay
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
-                    SDL_RenderClear(renderer);
-                    std::string end_run_string = "Run Score: " + std::to_string(score);
-                    render_score(renderer, end_run_string, font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
-                    SDL_RenderPresent(renderer);
-                    camera.reset();
-                    SDL_Delay(4000);
-                }
-                // restart the loop
-                end_run = true;
-            }
-
-
-            // render everything
-            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-            SDL_RenderClear(renderer);
-            level.render(camera);
-            player.render(camera);
-            score = player.get_x() / 10;
-            if (score == 0) {
-                render_score(renderer, "Press [SPACE] to Begin", font, FONT_COLOR, 200, 50);
-            }
-            else {
-                render_score(renderer, std::to_string(score), font, FONT_COLOR, 360, 50);
-            }
-//        render_player_collider(player, renderer, camera);  // uncomment to render player collider
-
-            SDL_RenderPresent(renderer);
-
-            // Frame Timing: Determine time it took to process this frame and delay if necessary to maintain constant frame rate
-            frame_end = SDL_GetTicks64();
-            auto frame_time = frame_end - frame_start; // time it took to process this frame
-            if (frame_time < FRAME_DURATION) {
-                SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
-            }
-        }
-
+        run_loop(renderer, player, level, camera, font, quit, lives, total_score);
     }
 
 }
+
+
+void run_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera& camera, TTF_Font* font, bool& quit, int& lives, int& total_score) {
+    /**
+     * Individual Run loop for Beach Bum Game
+     */
+    Uint64 frame_start = SDL_GetTicks64();
+    Uint64 frame_end{};
+    SDL_Event e;
+    std::vector<SDL_Rect> colliders;
+    int score;
+    bool end_run = false;
+
+    while(!quit && !end_run) {
+        // start frame timing
+        float delta_time = static_cast<float>(SDL_GetTicks64() - frame_start) / 1000.0f;
+        frame_start = SDL_GetTicks64();
+
+        handle_keyboard_events(player, e, quit);
+
+        // process player actions/movement & update level
+        colliders = level.get_colliders();
+        player.move(delta_time, colliders);
+        level.update(player.get_x(), camera.camera_rect.x);
+
+        // Game Over and Score Display
+        if (player.state == "dead") {
+            lives--;
+            total_score += score;
+            if (lives == 0) {
+                // Show Game Over screen w/ total score then exit
+                // TODO: keep track of high scores in high_scores.txt file and display them on the Game Over screen
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+                SDL_RenderClear(renderer);
+                render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
+                SDL_RenderPresent(renderer);
+                SDL_Delay(5000);
+//                    quit = true;  // uncomment to end execution after game over
+            }
+            else {
+                // Show end of run score then delay
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+                SDL_RenderClear(renderer);
+                std::string end_run_string = "Run Score: " + std::to_string(score);
+                render_score(renderer, end_run_string, font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
+                SDL_RenderPresent(renderer);
+                camera.reset();
+                SDL_Delay(4000);
+            }
+            // restart the loop
+            end_run = true;
+        }
+
+
+        // render everything
+        SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+        SDL_RenderClear(renderer);
+        level.render(camera);
+        player.render(camera);
+        score = player.get_x() / 10;
+        if (score == 0) {
+            render_score(renderer, "Press [SPACE] to Begin", font, FONT_COLOR, 200, 50);
+        }
+        else {
+            render_score(renderer, std::to_string(score), font, FONT_COLOR, 360, 50);
+        }
+//        render_player_collider(player, renderer, camera);  // uncomment to render player collider
+
+        SDL_RenderPresent(renderer);
+
+        // Frame Timing: Determine time it took to process this frame and delay if necessary to maintain constant frame rate
+        frame_end = SDL_GetTicks64();
+        auto frame_time = frame_end - frame_start; // time it took to process this frame
+        if (frame_time < FRAME_DURATION) {
+            SDL_Delay(FRAME_DURATION - frame_time); // wait the remaining frame time
+        }
+    }
+
+}
+
 
 bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window, TTF_Font*& font) {
     /**

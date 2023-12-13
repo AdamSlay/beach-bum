@@ -29,7 +29,7 @@ int main( int argc, char* argv[] ) {
     bool quit = false;
     while (!quit) {
         start_menu(renderer, font, quit);
-        run_game_loop(renderer, player, level, camera, font, quit);
+        game_loop(renderer, player, level, camera, font, quit);
     }
     close(renderer, window);
 
