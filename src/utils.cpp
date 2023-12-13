@@ -11,6 +11,9 @@ const int SCREEN_WIDTH = 770;
 const int SCREEN_HEIGHT = 420;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
+const int START_SCREEN_X = 100;
+const int START_SCREEN_Y = 150;
+SDL_Color FONT_COLOR = {255, 245, 140, 255};
 
 void start_menu(SDL_Renderer* renderer, TTF_Font* font, bool& quit) {
     SDL_Event e;
@@ -30,7 +33,7 @@ void start_menu(SDL_Renderer* renderer, TTF_Font* font, bool& quit) {
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
         SDL_RenderClear(renderer);
-        render_score(renderer, "Press S to Start\nPress Q to Quit", font, {255, 245, 140, 255});
+        render_score(renderer, "Press S to Start\nPress Q to Quit", font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
         SDL_RenderPresent(renderer);
     }
 }
@@ -73,7 +76,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     // TODO: keep track of high scores in high_scores.txt file and display them on the Game Over screen
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
                     SDL_RenderClear(renderer);
-                    render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, {255, 245, 140, 255});
+                    render_score(renderer, "Game Over.\n Score: " + std::to_string(total_score), font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
                     SDL_RenderPresent(renderer);
                     SDL_Delay(5000);
 //                    quit = true;  // uncomment to end execution after game over
@@ -83,7 +86,7 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
                     SDL_RenderClear(renderer);
                     std::string end_run_string = "Run Score: " + std::to_string(score);
-                    render_score(renderer, end_run_string, font, {255, 245, 140, 255});
+                    render_score(renderer, end_run_string, font, FONT_COLOR, START_SCREEN_X, START_SCREEN_Y);
                     SDL_RenderPresent(renderer);
                     camera.reset();
                     SDL_Delay(4000);
@@ -100,10 +103,10 @@ void run_game_loop(SDL_Renderer* renderer, Player& player, Level& level, Camera&
             player.render(camera);
             score = player.get_x() / 10;
             if (score == 0) {
-                render_score(renderer, "Press [SPACE] to Begin", font, {255, 245, 140, 255});
+                render_score(renderer, "Press [SPACE] to Begin", font, FONT_COLOR, 200, 50);
             }
             else {
-                render_score(renderer, std::to_string(score), font, {255, 245, 140, 255});
+                render_score(renderer, std::to_string(score), font, FONT_COLOR, 360, 50);
             }
 //        render_player_collider(player, renderer, camera);  // uncomment to render player collider
 
@@ -181,7 +184,7 @@ void handle_keyboard_events(Player& player, SDL_Event& e, bool& quit) {
     }
 }
 
-void render_score(SDL_Renderer* renderer, const std::string& text, TTF_Font* font, SDL_Color color) {
+void render_score(SDL_Renderer* renderer, const std::string& text, TTF_Font* font, SDL_Color color, int x, int y) {
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
     if (textSurface == nullptr) {
         std::cout << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
@@ -198,7 +201,7 @@ void render_score(SDL_Renderer* renderer, const std::string& text, TTF_Font* fon
     int textHeight = textSurface->h;
     SDL_FreeSurface(textSurface);
 
-    SDL_Rect renderQuad = {360, 50, textWidth, textHeight};
+    SDL_Rect renderQuad = {x, y, textWidth, textHeight};
     SDL_RenderCopy(renderer, textTexture, nullptr, &renderQuad);
     SDL_DestroyTexture(textTexture);
 }
