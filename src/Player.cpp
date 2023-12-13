@@ -112,6 +112,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
 
     if (dash_time_remaining > 0) {
         dash_time_remaining -= delta_time;
+        vel_y = 0;
         if (dash_time_remaining <= 0) {
             vel_x -= config.dashVelocity;
             dash_cooldown_remaining = config.dashCooldown; // can't dash again until cooldown over
