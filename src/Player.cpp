@@ -79,7 +79,9 @@ void Player::handle_event(SDL_Event& e) {
                 dash();
                 break;
             case SDLK_SPACE:
-                vel_x = config.velocity; // wait until user presses 'space' to start vel_x on a new run
+                if (vel_x == 0) {
+                    vel_x = config.velocity;  // wait until user presses 'space' to start vel_x on a new run
+                }
                 break;
             default:
                 break;
