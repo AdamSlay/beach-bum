@@ -9,11 +9,12 @@
 
 
 PlayerConfig PlayerConfig::loadFromJson(const std::string& filePath) {
+
+    PlayerConfig config;
+
     std::ifstream configFile(filePath);
     nlohmann::json configJson;
     configFile >> configJson;
-
-    PlayerConfig config;
     config.width = configJson["width"];
     config.height = configJson["height"];
     config.velocity = configJson["velocity"];
@@ -22,7 +23,6 @@ PlayerConfig PlayerConfig::loadFromJson(const std::string& filePath) {
     config.spawnY = configJson["spawnY"];
     config.xColliderOffset = configJson["xColliderOffset"];
     config.yColliderOffset = configJson["yColliderOffset"];
-    config.levelHeight = configJson["levelHeight"];
     config.colliderEdgeBuffer = configJson["colliderEdgeBuffer"];
     config.gravity = configJson["gravity"];
     config.player_scale = configJson["player_scale"];
@@ -36,6 +36,12 @@ PlayerConfig PlayerConfig::loadFromJson(const std::string& filePath) {
     config.dashDuration = configJson["dashDuration"];
     config.dashCooldown = configJson["dashCooldown"];
     config.dashVelocity = configJson["dashVelocity"];
+
+    std::ifstream run_config_file("../etc/run_config.json");
+    nlohmann::json run_config;
+    run_config_file >> run_config;
+    config.SCREEN_WIDTH = run_config["SCREEN_WIDTH"];
+    config.SCREEN_HEIGHT = run_config["SCREEN_HEIGHT"];
     return config;
 }
 
@@ -127,7 +133,7 @@ void Player::move(float delta_time, std::vector<SDL_Rect>& collision_objects) {
     set_state();
     keep_player_on_screen();
     if (vel_x > 0) {
-        vel_x += 0.1;
+        vel_x += 0.2;
     }
 }
 
@@ -269,7 +275,7 @@ void Player::set_state() {
 
 void Player::keep_player_on_screen() {
     // respawn at spawn location if you fall off the level
-    if (pos_y + config.height > config.levelHeight) {
+    if (pos_y + config.height > config.SCREEN_HEIGHT * 2) {
         pos_x = config.spawnX;
         pos_y = config.spawnY;
         vel_x = 0;

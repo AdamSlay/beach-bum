@@ -17,7 +17,6 @@ struct PlayerConfig {
     int spawnY;
     int xColliderOffset;
     int yColliderOffset;
-    int levelHeight;
     int colliderEdgeBuffer;
     float gravity;
     float player_scale;
@@ -31,6 +30,8 @@ struct PlayerConfig {
     float dashDuration;
     float dashCooldown;
     float dashVelocity;
+    int SCREEN_WIDTH;
+    int SCREEN_HEIGHT;
 
     static PlayerConfig loadFromJson(const std::string& filePath);
 };
