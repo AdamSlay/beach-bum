@@ -152,7 +152,9 @@ void Player::dash() {
 
 void Player::render(Camera& camera) {
     SDL_Rect player_rect = {pos_x, pos_y, config.width, config.height};
-    camera.center_on_object(player_rect);
+    int X_OFFSET = 100;
+    int Y_OFFSET = camera.camera_rect.h / 2;
+    camera.center_on_object(player_rect, Y_OFFSET, X_OFFSET);
 
     int render_x = pos_x - camera.camera_rect.x;
     int render_y = pos_y - camera.camera_rect.y;
