@@ -24,12 +24,11 @@ Camera::Camera(){
 
 float Camera::calculate_smoothing(float obj_distance, float min_smoothing, float max_smoothing, float range_limit, float dead_zone) {
     // if we're within the range limit, interpolate between min and max smoothing
-    if(dead_zone < obj_distance < range_limit) {
-        return min_smoothing + (max_smoothing - min_smoothing) * (obj_distance / range_limit);
-    }
-
-    else if (obj_distance < dead_zone) {
+    if (obj_distance < dead_zone) {
         return 0.0f;
+    }
+    else if (obj_distance < range_limit) {
+        return min_smoothing + (max_smoothing - min_smoothing) * (obj_distance / range_limit);
     }
 
     // if we're outside the range limit, just return max_smoothing
@@ -46,7 +45,7 @@ void Camera::center_on_object(const SDL_Rect& object_rect, const int Y_OFFSET, c
 
     // calculate the smoothing factor based on the distance to the edge
     float smoothing_x = calculate_smoothing(obj_distance_x, 0.01f, 0.05f, 200.0f, 0.0f);
-    float smoothing_y = calculate_smoothing(obj_distance_y, 0.0f, 0.05f, 400.0f, 2000.0f);
+    float smoothing_y = calculate_smoothing(obj_distance_y, 0.0f, 0.05f, 1000.0f, 300.0f);
 
     // apply smoothing factor to camera movement
     camera_rect.x += (desired_x - camera_rect.x) * smoothing_x;
