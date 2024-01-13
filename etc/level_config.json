@@ -17,8 +17,6 @@
   "PLATFORM_COUNT": 24,
   "TILE_WIDTH": 64,
   "TILE_HEIGHT": 64,
-  "SCREEN_WIDTH": 770,
-  "SCREEN_HEIGHT": 420,
   "BACKGROUND_SPRITE_PATH": "../assets/bb_90s_pattern_dark.png",
   "PLATFORM_SPRITE_PATH": "../assets/test_platforms.png"
 }

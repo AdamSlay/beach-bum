@@ -7,14 +7,19 @@
 #include "Camera.h"
 
 Camera::Camera(){
-    std::ifstream config_file("../etc/camera_config.json");
-    nlohmann::json config;
-    config_file >> config;
-    origin_x = config["origin_x"];
-    origin_y = config["origin_y"];
-    screen_width = config["screen_width"];
-    screen_height = config["screen_height"];
-    camera_rect = {origin_x, origin_y, screen_width, screen_height};
+    std::ifstream cam_config_file("../etc/camera_config.json");
+    nlohmann::json camera_config;
+    cam_config_file >> camera_config;
+
+    std::ifstream run_config_file("../etc/run_config.json");
+    nlohmann::json run_config;
+    run_config_file >> run_config;
+
+    origin_x = camera_config["origin_x"];
+    origin_y = camera_config["origin_y"];
+    SCREEN_WIDTH = run_config["SCREEN_WIDTH"];
+    SCREEN_HEIGHT = run_config["SCREEN_HEIGHT"];
+    camera_rect = {origin_x, origin_y, SCREEN_WIDTH, SCREEN_HEIGHT};
 }
 
 float Camera::calculate_smoothing(int obj_distance, float min_smoothing, float max_smoothing, float range_limit) {
@@ -56,5 +61,5 @@ void Camera::center_on_object(const SDL_Rect& object_rect) {
 }
 
 void Camera::reset() {
-    camera_rect = {origin_x, origin_y, screen_width, screen_height};
+    camera_rect = {origin_x, origin_y, SCREEN_WIDTH, SCREEN_HEIGHT};
 }

@@ -9,14 +9,17 @@
 Level::Level(SDL_Renderer* _renderer)
         : renderer(_renderer), platforms() {
 
+    std::ifstream run_config_file("../etc/run_config.json");
+    nlohmann::json run_config;
+    run_config_file >> run_config;
+    SCREEN_WIDTH = run_config["SCREEN_WIDTH"];
+    SCREEN_HEIGHT = run_config["SCREEN_HEIGHT"];
+
     std::ifstream config_file("../etc/level_config.json");
     nlohmann::json config;
     config_file >> config;
-
     TILE_WIDTH = config["TILE_WIDTH"];
     TILE_HEIGHT = config["TILE_HEIGHT"];
-    SCREEN_WIDTH = config["SCREEN_WIDTH"];
-    SCREEN_HEIGHT = config["SCREEN_HEIGHT"];
     PARALLAX_FACTOR = config["PARALLAX_FACTOR"];
     PLATFORM_WIDTH = config["PLATFORM_WIDTH"];
     PLATFORM_HEIGHT = config["PLATFORM_HEIGHT"];

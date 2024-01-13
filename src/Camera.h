@@ -8,8 +8,8 @@
 class Camera {
 public:
     SDL_Rect camera_rect;
-    int screen_width;
-    int screen_height;
+    int SCREEN_WIDTH;
+    int SCREEN_HEIGHT;
     int origin_x;
     int origin_y;
 

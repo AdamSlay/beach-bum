@@ -1,14 +1,15 @@
 #include <iostream>
+#include <fstream>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <nlohmann/json.hpp>
+
 #include "utils.h"
 
 
-const int SCREEN_WIDTH = 770;
-const int SCREEN_HEIGHT = 420;
 const int FPS = 60;
 const int FRAME_DURATION = 1000 / FPS;
 const int START_SCREEN_X = 100;
@@ -137,6 +138,11 @@ bool initialize_resources(SDL_Renderer*& renderer, SDL_Window*& window, TTF_Font
     /**
      * Initialize SDL and create window
      */
+    std::ifstream run_config_file("../etc/run_config.json");
+    nlohmann::json run_config;
+    run_config_file >> run_config;
+    const int SCREEN_WIDTH = run_config["SCREEN_WIDTH"];
+    const int SCREEN_HEIGHT = run_config["SCREEN_HEIGHT"];
 
     // Initialize SDL
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {

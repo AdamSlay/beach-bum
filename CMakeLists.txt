@@ -22,7 +22,9 @@ set(SOURCE_FILES
         src/Camera.cpp src/Camera.h
         src/Animator.cpp src/Animator.h
         src/Level.cpp src/Level.h
-        )
+        src/Game.cpp
+        src/Game.h
+)
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
