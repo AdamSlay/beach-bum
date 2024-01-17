@@ -14,7 +14,7 @@ public:
     int origin_y;
 
     Camera();
-    float calculate_smoothing(float obj_distance, float min_smoothing, float max_smoothing, float range_limit, float dead_zone);
+    float calculate_smoothing(float obj_distance, float smoothing, float range_limit, float dead_zone);
     void center_on_object(const SDL_Rect& object_rect, int Y_OFFSET, int X_OFFSET);
     void reset();
 
