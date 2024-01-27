@@ -10,6 +10,7 @@ public:
     SDL_Rect camera_rect;
     int SCREEN_WIDTH;
     int SCREEN_HEIGHT;
+    int GROUND_LEVEL_Y;
     int origin_x;
     int origin_y;
 

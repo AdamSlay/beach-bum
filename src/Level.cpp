@@ -14,6 +14,7 @@ Level::Level(SDL_Renderer* _renderer)
     run_config_file >> run_config;
     SCREEN_WIDTH = run_config["SCREEN_WIDTH"];
     SCREEN_HEIGHT = run_config["SCREEN_HEIGHT"];
+    GROUND_LEVEL_Y = run_config["GROUND_LEVEL_Y"];
 
     std::ifstream config_file("../etc/level_config.json");
     nlohmann::json config;
@@ -33,7 +34,6 @@ Level::Level(SDL_Renderer* _renderer)
     PLAT_DIST_Y_MIN = config["PLAT_DIST_Y_MIN"];
     PLAT_DIST_Y_MAX = config["PLAT_DIST_Y_MAX"];
     PLATFORM_TYPES = config["PLATFORM_TYPES"];
-    GROUND_LEVEL_Y = config["GROUND_LEVEL_Y"];
     PLATFORM_SCALE_FACTOR = config["PLATFORM_SCALE_FACTOR"];
     BACKGROUND_SPRITE_SHEET_PATH = config["BACKGROUND_SPRITE_PATH"];
     PLATFORM_SPRITE_SHEET_PATH = config["PLATFORM_SPRITE_PATH"];
