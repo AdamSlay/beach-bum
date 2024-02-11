@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Camera.h"
+#include "Game.h"
 #include "Level.h"
 #include "Player.h"
 #include "Texture.h"

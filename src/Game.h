@@ -1,6 +1,7 @@
-//
-// Created by adam slay on 1/8/24.
-//
+#ifndef SDL_PRACTICE_GAME_H
+#define SDL_PRACTICE_GAME_H
+
+
 #include "SDL2/SDL.h"
 #include <SDL2/SDL_ttf.h>
 
@@ -9,15 +10,10 @@
 #include "Level.h"
 
 
-#ifndef SDL_PRACTICE_GAME_H
-#define SDL_PRACTICE_GAME_H
-
-
 class Game {
 public:
-    Game();
+    Game(Player& player, Level& level, Camera& camera, SDL_Window* window, SDL_Renderer* renderer, TTF_Font* font);
     ~Game();
-    bool initialize();
     void run();
     void close();
 
@@ -36,7 +32,6 @@ private:
     void handle_keyboard_events(SDL_Event& e);
     void render_score(const std::string& text, SDL_Color color, int x, int y);
     bool check_collision(SDL_Rect a, SDL_Rect b);
-    // ... any other methods you need ...
 };
 
 
