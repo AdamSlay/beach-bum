@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Checkundefinedif vcpkg is installed
+# Check if vcpkg is installed
 if [ ! -d "./vcpkg" ]
 then
     # Clone vcpkg repository
